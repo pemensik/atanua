@@ -1,4 +1,4 @@
-Notes pn this fork.
+Notes on this fork.
 
 Ported to SDL 2 and Visual C 2019.
 
