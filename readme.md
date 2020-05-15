@@ -1,3 +1,13 @@
+Notes pn this fork.
+
+Ported to SDL 2 and Visual C 2019.
+
+Fix problem with b & d on 309 display(use lower case).
+
+Will look at fixing the file IO the file opens are badly flawed and do not return errors properly.
+
+The best way to run is to have an orginal installation and put executables in that.
+
 # Atanua Real-Time Logic Simulator
 
 This is a real-time logic simulator designed for educational use. It was originally built as a bachelor of engineering project, and it was commercially available from 2008 to 2014. Since it never really "took off" commercially, I decided to release it as open source.
