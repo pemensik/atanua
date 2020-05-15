@@ -209,7 +209,8 @@ public:
 
 extern AtanuaConfig gConfig;
 extern ACFont fn, fn14;
-extern int gKeyState[SDLK_LAST];
+//extern int gKeyState[SDL_NUM_SCANCODES]; //ontobus
+extern int gKeyState[SDL_NUM_SCANCODES];
 extern int gSelectKeyMask;
 extern int gCloneKeyMask;
 extern int gBlackBackground;

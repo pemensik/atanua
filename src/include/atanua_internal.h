@@ -131,7 +131,9 @@ extern int gDragMode;
 extern Chip * gNewChip;
 extern const char * gNewChipName;
 
+extern SDL_Window* gWindow;
 
+extern int gRenderDriverIndex;
 
 extern void build_nets();
 extern void delete_chip(Chip *c);

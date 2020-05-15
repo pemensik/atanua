@@ -57,7 +57,8 @@ void resetfilename()
 	gFilename = NULL;
     char temp[256];
     sprintf(temp, "%s - %s", TITLE, gConfig.mUserInfo);
-    SDL_WM_SetCaption(temp, NULL);  
+//    SDL_SetWindowTitle(temp, NULL);
+    SDL_SetWindowTitle(gWindow,temp);
 }
 
 void storefilename(const char *fn)
@@ -97,7 +98,7 @@ void storefilename(const char *fn)
 
     char temp[1024];
     sprintf(temp, "%s - " TITLE " - %s", pt, gConfig.mUserInfo);
-    SDL_WM_SetCaption(temp, NULL);  
+    SDL_SetWindowTitle(gWindow,temp);  
 	
 }
 
@@ -116,8 +117,8 @@ FILE * openfiledialog(const char *title)
 
     SDL_SysWMinfo wmInfo;
     memset(&wmInfo, 0, sizeof(wmInfo));
-    SDL_GetWMInfo(&wmInfo);
-    HWND hWnd = wmInfo.window;
+    SDL_GetWindowWMInfo(gWindow,&wmInfo);
+    HWND hWnd = wmInfo.info.win.window;
     OPENFILENAME ofn;
     char szFileName[1024] = "";
 
@@ -179,8 +180,12 @@ FILE * savefiledialog(const char *title)
 
     SDL_SysWMinfo wmInfo;
     memset(&wmInfo, 0, sizeof(wmInfo));
-    SDL_GetWMInfo(&wmInfo);
-    HWND hWnd = wmInfo.window;
+
+//    SDL_GetWMInfo(&wmInfo);
+    SDL_GetWindowWMInfo(gWindow,&wmInfo);
+
+
+    HWND hWnd = wmInfo.info.win.window;
 
     OPENFILENAME ofn;
     char szFileName[1024] = "";
@@ -235,8 +240,8 @@ int okcancel(const char *prompt)
 {
     SDL_SysWMinfo wmInfo;
     memset(&wmInfo, 0, sizeof(wmInfo));
-    SDL_GetWMInfo(&wmInfo);
-    HWND hWnd = wmInfo.window;
+    SDL_GetWindowWMInfo(gWindow,&wmInfo);
+    HWND hWnd = wmInfo.info.win.window;
     if (MessageBox(hWnd,prompt,TITLE,MB_OKCANCEL | MB_ICONWARNING) == IDOK)
         return 1;
     return 0;

@@ -40,11 +40,15 @@ struct texpair
 
 int gScreenWidth = 0;
 int gScreenHeight = 0;
+
 MersenneTwister gVisualRand, gPhysicsRand;
 UIState gUIState = {0,0,0,0,0,0,0,0,0,0};
 texpair * gTextureStore = NULL;
 int gTextureStoreSize = 0;
 
+SDL_Window* gWindow;
+
+int gRenderDriverIndex=-1;
 
 static void render_perfcounters(int tex_font, ACFont * font)
 {
@@ -117,11 +121,14 @@ void set2d()
 
 void initvideo(int argc)
 {
-    const SDL_VideoInfo *info = NULL;
+//    const SDL_VideoInfo *info = NULL;
+    SDL_RendererInfo* info=NULL;
+//    const SDL_RendererInfo* info2=NULL;
     int bpp = 0;
     int flags = 0;
 
-    info = SDL_GetVideoInfo();
+//    info=SDL_GetVideoInfo();
+    SDL_GetRenderDriverInfo(gRenderDriverIndex,info);
 
     if (!info) 
     {
@@ -142,12 +149,19 @@ void initvideo(int argc)
 
     if (argc > 1) fsflag = !fsflag;
 
-    if (fsflag) 
+    SDL_DisplayMode mode={ SDL_PIXELFORMAT_UNKNOWN, 0, 0, 0, 0 };
+    SDL_GetDisplayMode(gRenderDriverIndex,0,&mode);
+
+    if(fsflag)
     {
-        gScreenWidth = info->current_w;
-        gScreenHeight = info->current_h;
-        bpp = info->vfmt->BitsPerPixel;
-        flags = SDL_OPENGL | SDL_FULLSCREEN;
+        SDL_GetWindowSize(gWindow,&gScreenWidth,&gScreenHeight);
+//        gScreenWidth=info->current_w;
+//        gScreenHeight=info->current_h;
+
+ //       bpp=mode.format;
+  
+        //flags=SDL_WINDOW_OPENGL|SDL_FULLSCREEN;
+        flags=SDL_WINDOW_FULLSCREEN|SDL_WINDOW_OPENGL;
     }
     else
     {
@@ -160,12 +174,13 @@ void initvideo(int argc)
             gScreenWidth = DESIRED_WINDOW_WIDTH;
             gScreenHeight = DESIRED_WINDOW_HEIGHT;
         }
-        bpp = info->vfmt->BitsPerPixel;
-        flags = SDL_OPENGL;
+//        bpp = info->vfmt->BitsPerPixel;
+        flags = SDL_WINDOW_OPENGL;
 #ifdef RESIZABLE_WINDOW
-        flags |= SDL_RESIZABLE;
+        flags |= SDL_WINDOW_RESIZABLE;
 #endif
     }
+    bpp=mode.format;
 
     SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 5);
     SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 5);
@@ -173,7 +188,9 @@ void initvideo(int argc)
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
-    if (SDL_SetVideoMode(gScreenWidth, gScreenHeight, bpp, flags) == 0) 
+  //
+  //  if (SDL_SetVideoMode(gScreenWidth, gScreenHeight, bpp, flags) == 0) 
+    if(SDL_CreateWindow("Something Something Darkside",SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_UNDEFINED,gScreenWidth,gScreenHeight,flags)==0)
     {
         fprintf( stderr, "Video mode set failed: %s\n", SDL_GetError());
         SDL_Quit();
