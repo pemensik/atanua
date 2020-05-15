@@ -65,7 +65,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <WholeProgramOptimization>true</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>src\include\;src\;\libraries\SDL-1.2.13\include;src\tinyxml_2_5_3\tinyxml;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src\include\;src\;src\tinyxml_2_5_3\tinyxml;C:\Users\John Bradley\source\SDL2-2.0.12\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <ExceptionHandling>Sync</ExceptionHandling>
@@ -90,10 +90,10 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>SDLmain.lib;opengl32.lib;glu32.lib;SDL.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>.\Atanua.exe</OutputFile>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;opengl32.lib;glu32.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>.\Release\Atanua.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>\libraries\SDL-1.2.13\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\John Bradley\source\SDL2-2.0.12\lib\x86;\libraries\SDL-1.2.13\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ProgramDatabaseFile>.\Release/atanua.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
@@ -117,7 +117,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>src\include\;src\;\libraries\SDL-1.2.13\include;src\tinyxml_2_5_3\tinyxml;C:\Users\John Bradley\source\SDL2-2.0.12\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src\include\;src\;src\tinyxml_2_5_3\tinyxml;C:\Users\John Bradley\source\SDL2-2.0.12\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -139,7 +139,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>SDL2main.lib;opengl32.lib;glu32.lib;SDL2.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;opengl32.lib;glu32.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ShowProgress>NotSet</ShowProgress>
       <OutputFile>.\Debug\Atanua.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>

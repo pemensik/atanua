@@ -171,6 +171,10 @@ void process_events()
 	{
 		switch(event.type)
 		{
+			case SDL_TEXTINPUT:
+				gUIState.keychar = event.text.text[0];                
+				break;
+
 			case SDL_KEYDOWN:
 				handle_key(event.key.keysym.sym,1);
 				// If a key is pressed, report it to the widgets
@@ -191,7 +195,7 @@ void process_events()
 
 				// if key is ASCII, accept it as character input
 	//            if ((event.key.keysym.unicode & 0xFF80) == 0)
-	//                gUIState.keychar = event.key.keysym.unicode & 0x7f;                
+	//                gUIState.keychar = event.key.keysym.sym & 0x7f;                
 
 				break;
 			case SDL_KEYUP:
@@ -286,7 +290,7 @@ void process_events()
 				{
 					do_cancel();
 				}
-
+/*
 				if(event.button.button==4)
 				{
 					gUIState.scroll=+1;
@@ -294,7 +298,7 @@ void process_events()
 				if(event.button.button==5)
 				{
 					gUIState.scroll=-1;
-				}
+				}*/
 				break;
 			case SDL_MOUSEBUTTONUP:
 				// update button down state if left-clicking
@@ -303,6 +307,23 @@ void process_events()
 				break;
 
 			case SDL_MOUSEWHEEL:             /**< Mouse wheel motion */
+				if(event.wheel.y>0) // scroll up
+				{
+					gUIState.scroll=+1;
+				}
+				else if(event.wheel.y<0) // scroll down
+				{
+					gUIState.scroll=-1;
+				}
+
+				if(event.wheel.x>0) // scroll right
+				{
+					// ...
+				}
+				else if(event.wheel.x<0) // scroll left
+				{
+					// ...
+				}
 				break;
 
 			case SDL_QUIT:
