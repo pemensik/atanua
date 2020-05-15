@@ -97,6 +97,7 @@ float gPlayHead=0;
 unsigned char* gAudioOut;
 
 void initvideo();
+void resizevideo();
 
 void handle_key(int keysym,int down)
 {
@@ -300,6 +301,10 @@ void process_events()
 				if(event.button.button==1)
 					gUIState.mousedown=0;
 				break;
+
+			case SDL_MOUSEWHEEL:             /**< Mouse wheel motion */
+				break;
+
 			case SDL_QUIT:
 				SDL_Quit();
 				exit(0);
@@ -311,20 +316,20 @@ void process_events()
 					case SDL_WINDOWEVENT_RESIZED:
 						gScreenWidth=event.window.data1;
 						gScreenHeight=event.window.data2;
-						initvideo();
+//						initvideo();
+						resizevideo();
 						break;
-
 				}
 				break;
-//			case SDL_WINDOWEVENT:
-//			case SDL_AUDIODEVICEADDED:
-//			case SDL_TEXTEDITING:
-//				g=event.type;
-//				break;
 
-//			default:
-//				g=event.type;
-//				break;
+			case SDL_AUDIODEVICEADDED:
+			case SDL_TEXTEDITING:
+				g=event.type;
+				break;
+
+			default:
+				g=event.type;
+				break;
 		}
 	}
 }
@@ -586,7 +591,7 @@ static void draw_screen()
 	glScissor(0,0,gConfig.mToolkitWidth-20,gScreenHeight-40);
 
 	int loc=-1;
-	loc=0;
+
 	if(gUIState.scroll&&gUIState.mousex<gConfig.mToolkitWidth&&gUIState.mousey > 40)
 	{
 		slidervalue-=gUIState.scroll*26*3;
@@ -1677,6 +1682,28 @@ void initvideo()
 	{
 		SDL_GL_CreateContext(gWindow);
 	}
+
+	glViewport(0,0,gScreenWidth,gScreenHeight);
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+
+	gluOrtho2D(0,gScreenWidth,gScreenHeight,0);
+
+	if(gConfig.mUseBlending)
+		glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+
+//	reload_textures();
+}
+
+
+
+void resizevideo()
+{
+	SDL_SetWindowSize(gWindow,gScreenWidth,gScreenHeight);
+
+	SDL_GL_CreateContext(gWindow);
 
 	glViewport(0,0,gScreenWidth,gScreenHeight);
 
