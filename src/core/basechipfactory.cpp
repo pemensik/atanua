@@ -106,6 +106,9 @@ distribution.
 #include "box.h"
 #include "extpin.h"
 
+#include "ChipTriState.h"
+
+
 static const char *led_red = "LED (red)";
 static const char *led_green = "LED (green)";
 static const char *led_blue = "LED (blue)";
@@ -333,6 +336,8 @@ static const char *label_01      = "Label (0.1pt)";
 
 static const char *extpin        = "External Pin";
 
+static const char* chipTriState       =   "ChipTriState";
+
 BaseChipFactory::~BaseChipFactory()
 {
 }
@@ -557,6 +562,8 @@ Chip * BaseChipFactory::build(const char *aChipId)
     if (strcmp(stepper1, aChipId) == 0) return new StepperMotor(0);
     if (strcmp(stepper2, aChipId) == 0) return new StepperMotor(1);
 
+    if(strcmp(chipTriState,aChipId)==0) return new ChipTriState(0);
+
     int i;
     char temp[64];
     for (i = 0; i < 10; i++)
@@ -679,6 +686,10 @@ void BaseChipFactory::getSupportedChips(vector<char *> aChipList[5])
 
     aChipList[0].push_back(mystrdup(mux));
     aChipList[0].push_back(mystrdup(dx));
+
+    aChipList[0].push_back(NULL);
+
+    aChipList[0].push_back(mystrdup(chipTriState));
 
     aChipList[0].push_back(NULL);
 

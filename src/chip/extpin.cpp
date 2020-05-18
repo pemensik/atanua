@@ -28,7 +28,7 @@ distribution.
 ExtPin::ExtPin(float aSize) : Label(aSize)
 {
     mPin.push_back(&mInputPin);
-    mInputPin.set(0, (mH-0.5)/2, this, "External pin");	
+    mInputPin.set(0.25, (mH-0.5)/2, this, "External pin");	
 
 	// hack: if size is negative, this is not related to the
 	// box we're loading.

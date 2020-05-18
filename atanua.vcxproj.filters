@@ -356,6 +356,9 @@
     <ClCompile Include="src\8051\disasm.c">
       <Filter>Source Files\8051</Filter>
     </ClCompile>
+    <ClCompile Include="src\chip\TriStateChip.cpp">
+      <Filter>Source Files\chip</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\include\7segchip.h">
@@ -620,6 +623,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\include\xorchip.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\ChipTriState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
