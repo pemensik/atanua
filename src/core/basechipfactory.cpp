@@ -101,6 +101,8 @@ distribution.
 #include "chip2051.h"
 #include "audiochip.h"
 #include "chip27xx.h"
+#include "chip6116.h"
+
 #include "chip7489.h"
 
 #include "box.h"
@@ -326,6 +328,8 @@ static const char *stepper2     = "BP Stepper motor";
 static const char *chip2708     = "2708";
 static const char *chip2716     = "2716";
 static const char *chip2732     = "2732";
+
+static const char* chip6116     = "6116";
 
 static const char *extrapin      = "Connection Pin";
 static const char *label_5       = "Label (5pt)";
@@ -557,6 +561,9 @@ Chip * BaseChipFactory::build(const char *aChipId)
     if (strcmp(chip2708, aChipId) == 0) return new Chip27xx(8);
     if (strcmp(chip2716, aChipId) == 0) return new Chip27xx(16);
     if (strcmp(chip2732, aChipId) == 0) return new Chip27xx(32);
+
+    if(strcmp(chip6116,aChipId)==0) return new Chip6116(16);
+
 
     if (strcmp(audiochip, aChipId) == 0) return new AudioChip();
     if (strcmp(stepper1, aChipId) == 0) return new StepperMotor(0);
@@ -882,6 +889,10 @@ void BaseChipFactory::getSupportedChips(vector<char *> aChipList[5])
     aChipList[1].push_back(mystrdup(chip2708));
     aChipList[1].push_back(mystrdup(chip2716));
     aChipList[1].push_back(mystrdup(chip2732));
+
+    aChipList[1].push_back(NULL);
+
+    aChipList[1].push_back(mystrdup(chip6116));
 
     aChipList[1].push_back(NULL);
 

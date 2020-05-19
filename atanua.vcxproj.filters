@@ -359,6 +359,9 @@
     <ClCompile Include="src\chip\TriStateChip.cpp">
       <Filter>Source Files\chip</Filter>
     </ClCompile>
+    <ClCompile Include="src\chip\chip6116.cpp">
+      <Filter>Source Files\chip</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\include\7segchip.h">
@@ -626,6 +629,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\include\ChipTriState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\chip6116.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

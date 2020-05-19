@@ -175,6 +175,7 @@
     <ClCompile Include="src\chip\chip2051.cpp" />
     <ClCompile Include="src\chip\chip27xx.cpp" />
     <ClCompile Include="src\chip\chip309.cpp" />
+    <ClCompile Include="src\chip\chip6116.cpp" />
     <ClCompile Include="src\chip\chip7400.cpp" />
     <ClCompile Include="src\chip\chip7402.cpp" />
     <ClCompile Include="src\chip\chip7404.cpp" />
@@ -281,6 +282,7 @@
     <ClInclude Include="src\include\chip2051.h" />
     <ClInclude Include="src\include\chip27xx.h" />
     <ClInclude Include="src\include\chip309.h" />
+    <ClInclude Include="src\include\chip6116.h" />
     <ClInclude Include="src\include\chip7400.h" />
     <ClInclude Include="src\include\chip7402.h" />
     <ClInclude Include="src\include\chip7404.h" />
