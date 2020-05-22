@@ -267,9 +267,15 @@ void Composite::update(float aTick)
 						}
 						else
 						{
-							RawBitMap[mScanY*mxSize+mScanX]=0xFFFFFFFF;
+							if(DPin==NETSTATE_HIGH)
+							{
+								RawBitMap[mScanY*mxSize+mScanX]=0xFFFFFFFF;
+							}
+							else
+							{
+								RawBitMap[mScanY*mxSize+mScanX]=0xFF000000;
+							}
 						}
-
 					}
 
 					mDirty=1;
