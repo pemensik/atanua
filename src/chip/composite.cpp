@@ -27,10 +27,9 @@ distribution.
 Composite::Composite(CType aSize)
 {
  	mSize = aSize;
-	mPins=4;
+	mPins=3;
 
-//	numberwang=0;
-
+	mInSyncCount=0;
 
 	if(mSize==i480)
 	{
@@ -58,9 +57,8 @@ Composite::Composite(CType aSize)
 	float ypos=0.2;
 
 	mInputPin[0].set(0,ypos,this,"Composite");
-	mInputPin[1].set(0,2+ypos,this,"VSync");
-	mInputPin[2].set(0,4+ypos,this,"HSync");
-	mInputPin[3].set(0,6+ypos,this,"Clk");
+	mInputPin[1].set(0,2+ypos,this,"Sync");
+	mInputPin[2].set(0,4+ypos,this,"Clk");
 
 	mBaseTexture=create_blank_texture("composite_base",1,mxSize,mySize);
 	
@@ -120,37 +118,27 @@ void Composite::render(int aChipId)
 		glBegin(GL_TRIANGLE_STRIP);
 		glTexCoord2f(0,0);
 		glVertex2f(mX+0.25,mY);
-//		glTexCoord2f(0,1);
 		glTexCoord2f(0,(float)mMaxY/(float)mySize);
 		glVertex2f(mX+0.25,mY+mH);
-//		glTexCoord2f(1,0);
 		glTexCoord2f((float)mMaxX/(float)mxSize,0);
 		glVertex2f(mX+0.25+mW-0.5,mY);
-//		glTexCoord2f(1,1);
 		glTexCoord2f((float)mMaxX/(float)mxSize,(float)mMaxY/(float)mySize);
 		glVertex2f(mX+0.25+mW-0.5,mY+mH);
 		glEnd();
 		glDisable(GL_TEXTURE_2D);
-
-
-//		glBlendFunc(GL_ONE,GL_ONE);
-//		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 	}
 }   
 
-//if((mInputPinA.mNet->mState==NETSTATE_HIGH||mInputPinA.mNet->mState==NETSTATE_NC)&&
-//	(mInputPinB.mNet->mState==NETSTATE_HIGH||mInputPinB.mNet->mState==NETSTATE_NC))
 
 void Composite::update(float aTick)
 {
-	//    int x, y, c;
-	unsigned long* RawBitMap,pVal;
+	unsigned long* RawBitMap,PixVal;
 	netstates	ClkState;
 
 
-	if(mInputPin[0].mNet&&mInputPin[1].mNet&&mInputPin[2].mNet&&mInputPin[3].mNet)
+	if(mInputPin[DATA_PIN].mNet&&mInputPin[SYNC_PIN].mNet&&mInputPin[CLK_PIN].mNet)
 	{
-		ClkState=mInputPin[3].mNet->mState;
+		ClkState=mInputPin[CLK_PIN].mNet->mState;
 
 		if(ClkState!=mLastClkState)
 		{
@@ -158,20 +146,17 @@ void Composite::update(float aTick)
 
 			if(ClkState==NETSTATE_LOW)
 			{
-
-				netstates HPin=mInputPin[2].mNet->mState;
-				netstates VPin=mInputPin[1].mNet->mState;
-				netstates DPin=mInputPin[0].mNet->mState;
+				netstates SPin=mInputPin[SYNC_PIN].mNet->mState;
+				netstates DPin=mInputPin[DATA_PIN].mNet->mState;
 
 				if(
-					HPin==NETSTATE_NC||HPin==NETSTATE_INVALID||
-					VPin==NETSTATE_NC||VPin==NETSTATE_INVALID||
+					SPin==NETSTATE_NC||SPin==NETSTATE_INVALID||
 					DPin==NETSTATE_NC||DPin==NETSTATE_INVALID)
 				{
 				}
 				else
 				{
-					if(HPin==NETSTATE_HIGH&&!mInHSync)
+					if(SPin==NETSTATE_HIGH&&!mInHSync)
 					{
 						mInHSync=true;
 						mScanX=0;
@@ -180,107 +165,76 @@ void Composite::update(float aTick)
 						{
 							mMaxY=mScanY;
 						}
+						mInSyncCount=0;
+
 					}
-					else if(HPin==NETSTATE_HIGH&&mInHSync)
+					else if(SPin==NETSTATE_HIGH&&mInHSync)
 					{
-//						mScanX=0;
-						//				mScanX++;
+						mInSyncCount++;
+						if(mInSyncCount>35 && !mInVSync)
+						{
+							mScanX=0;
+							mScanY=0;
+							mInVSync=true;
+						}
+						else if(mInSyncCount>35&&mInVSync)
+						{
+							if(mScanX>=mMaxX)
+							{
+								mScanX=0;
+								mScanY++;
+							}
+						}
 					}
-					else if(HPin==NETSTATE_LOW&&mInHSync)
+					else if(SPin==NETSTATE_LOW&&mInHSync)
 					{
 						mInHSync=false;
-					}
-					else if(VPin==NETSTATE_LOW&&mInVSync)
-					{
-						mInVSync=false;
+						if(mInVSync)
+						{
+							mInVSync=false;
+							mScanX=0;
+							mScanY++;
+						}
 					}
 					else
 					{
 						//				mScanX++;
 					}
-
-					if(VPin==NETSTATE_HIGH&&!mInVSync)
-					{
-						mScanX=0;
-						mScanY=0;
-						mInVSync=true;
-					}
-					else if(VPin==NETSTATE_LOW&&mInVSync)
-					{
-						mInVSync=false;
-						mScanX=0;
-					}
-
-					if(!mInVSync&&!mInHSync)
-					{
-						if(DPin==NETSTATE_HIGH)
-						{
-							pVal=0xFFFFFF;
-						}
-						else
-						{
-							pVal=0x000000;
-						}
-					}
-					else
-					{
-						pVal=0x000000;
-					}
-
 
 					if(FindTextBitmap("composite_base",(unsigned char**)&RawBitMap))
 					{
-						/*
-								for(y=0,c=0; y<mySize; y++)
-								{
-									for(x=0; x<mxSize; x++)
-									{
-										RawBitMap[y*mxSize+x]=0xFF000000;
-
-										if((y/10)%2)
-										{
-											RawBitMap[y*mxSize+x]|=0x00FF0000;
-										}
-										else
-										{
-											if((x/10)%2)
-											{
-												RawBitMap[y*mxSize+x]|=0x000000FF;
-											}
-											else
-											{
-												RawBitMap[y*mxSize+x]|=0x000000FF|(((numberwang)<<8)&0xFF00);
-											}
-										}
-									}
-								}
-								*/
-
-								//				RawBitMap[mScanY*mxSize+mScanX]=0xFF000000|pVal;
 						if(mInVSync)
 						{
-							RawBitMap[mScanY*mxSize+mScanX]=0xFF0000FF;
+							PixVal=0xFF0000FF;
 						}
 						else if(mInHSync)
 						{
-							RawBitMap[mScanY*mxSize+mScanX]=0xFF00FF00;
+							PixVal=0xFF00FF00;
 						}
 						else
 						{
 							if(DPin==NETSTATE_HIGH)
 							{
-								RawBitMap[mScanY*mxSize+mScanX]=0xFFFFFFFF;
+								PixVal=0xFFFFFFFF;
 							}
 							else
 							{
-								RawBitMap[mScanY*mxSize+mScanX]=0xFF000000;
+								PixVal=0xFF000000;
 							}
 						}
+
+						if(RawBitMap[mScanY*mxSize+mScanX]!=PixVal)
+						{
+							RawBitMap[mScanY*mxSize+mScanX]=PixVal;;
+							mDirty=1;
+						}
+
 					}
 
-					mDirty=1;
-
-					reload_textures();
+					if(mDirty)
+					{
+						reload_textures();
+					}
 
 					mScanX++;
 					if(mScanX>mMaxX)

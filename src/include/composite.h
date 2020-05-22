@@ -42,16 +42,21 @@ private:
     CType mSize;        // Grid size (n x n)
 
     int mPins;
-
     Pin *mInputPin;   // Chip's input pins
 	char **mPinDescription;
+#define DATA_PIN	0
+#define SYNC_PIN	1
+#define CLK_PIN		2
+
+
     int mBaseTexture; // Chip's base texture
 	int mLitTexture;  // Chip's lit texture
 
     int mxSize;        // Grid size (n x n)
     int mySize;        // Grid size (n x n)
 
-//    int numberwang;
+
+    int mInSyncCount;
 
     int mScanX;
     int mScanY;

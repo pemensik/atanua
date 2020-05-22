@@ -1180,16 +1180,7 @@ GLuint create_blank_texture(const char* aFilename,int Clamp,int w,int h)
     {
         for(int x=0; x<w; x++)
         {
-            src[y*w+x]=0xFF000000;
-
-            if((y/10)%2)
-            {
-                (src)[y*w+x]|=0x00000000;
-            }
-            else
-            {
-                (src)[y*w+x]|=0x00000000;
-            }
+            src[y*w+x]=0xFFFFFFFF;
         }
     }
 
@@ -1197,12 +1188,6 @@ GLuint create_blank_texture(const char* aFilename,int Clamp,int w,int h)
     GLuint texname;
     glGenTextures(1,&texname);
     glBindTexture(GL_TEXTURE_2D,texname);
-
-
-//    load_blank_texture(aFilename,Clamp,w,h,src);
-//    load_blank_texture(gTextureStore[i]);
-
-     //    do_loadtexture(aFilename,clamp);
 
     gTextureStoreSize++;
 
