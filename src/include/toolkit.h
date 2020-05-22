@@ -187,6 +187,9 @@ enum keystates
 #define M_PI 3.1415926535897932384626433832795
 #endif
 
+GLuint FindTextBitmap(const char* aFilename,unsigned char** RawBitMap);
+
+
 extern MersenneTwister gVisualRand, gPhysicsRand;
 extern int gScreenWidth, gScreenHeight;
 
@@ -197,7 +200,17 @@ void render_perfcounters(ACFont *font);
 void render_perfcounters(int tex_font);
 
 GLuint load_texture(const char * aFilename, int clamp = 1);
+
+GLuint create_blank_texture(const char* aFilename,int Clamp,int width,int height);
+
+
+//static void load_blank_texture(const char* aFilename,int Clamp,int w,int h,unsigned long* src);
+
+
 void reload_textures();
+GLuint EmptyTextureStore();
+
+
 SDL_Cursor *load_cursor(const char *aFilename, int hotx, int hoty);
 void drawrect(float x, float y, float w, float h, int color);
 void drawtexturedrect(int tex, float x, float y, float w, float h, int color);
@@ -220,5 +233,7 @@ int imgui_slider(int id, float x, float y, float w, float h, int bg, int thumb, 
 int imgui_textfield(int id, ACFont &font, int x, int y, int w, int h, char *buffer, int maxlen, int base, int face, int hot, int textcolor);
 void imgui_prepare();
 void imgui_finish();
+
+
 
 #endif

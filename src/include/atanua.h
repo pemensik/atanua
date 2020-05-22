@@ -26,7 +26,7 @@ distribution.
 using namespace std;
 
 
-enum pinmodes
+typedef enum pinmodes
 {
     PINSTATE_HIGHZ,
     PINSTATE_READ,
@@ -35,15 +35,15 @@ enum pinmodes
     PINSTATE_READ_OR_WRITE_HIGH,
     PINSTATE_READ_OR_WRITE_LOW,
     PINSTATE_PROPAGATE_INVALID
-};
+} pinmodes;
 
-enum netstates
+typedef enum netstates
 {
     NETSTATE_NC,      // not connected - zero inputs
     NETSTATE_INVALID, // invalid state - mode than one input
     NETSTATE_HIGH,
     NETSTATE_LOW
-};
+} netstates;
 
 class Pin;
 class Chip;
@@ -54,7 +54,7 @@ class Net
 {
 public:
     int mHighFreqChanges;
-    int mState;
+    netstates mState;
 	int mResetDelay;
 	int mDirty;
     vector<Pin *> mPin;

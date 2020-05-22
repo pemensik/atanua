@@ -32,6 +32,7 @@ distribution.
 #include "ledchip.h"
 #include "sedchip.h"
 #include "ledgrid.h"
+#include "composite.h"
 #include "7segchip.h"
 #include "16segchip.h"
 #include "chip309.h"
@@ -167,6 +168,9 @@ static const char *istsg_yellow = "16-seg (yellow) inverted";
 static const char *istsg_white = "16-seg (white) inverted";
 
 static const char *chip309 = "309";
+
+static const char* composite576i="composite 576i";
+static const char* composite480i="composite 480i";
 
 static const char *ledgrid4x4_red = "4x4 led grid (red)";
 static const char *ledgrid4x4_green = "4x4 led grid (green)";
@@ -499,6 +503,9 @@ Chip * BaseChipFactory::build(const char *aChipId)
     if (strcmp(iledgrid8x8_white,   aChipId) == 0) return new LedGrid(8, 0xffffff, 1);
 
     if (strcmp(chip309,     aChipId) == 0) return new Chip309();
+
+    if(strcmp(composite480i,aChipId)==0) return new Composite(Composite::CType::i480);
+    if(strcmp(composite576i,aChipId)==0) return new Composite(Composite::CType::i576);
 
     if (strcmp("LogicProbe", aChipId) == 0) return new LogicProbe();
 
@@ -843,6 +850,11 @@ void BaseChipFactory::getSupportedChips(vector<char *> aChipList[5])
     aChipList[3].push_back(mystrdup(iledgrid8x8_magenta));
     aChipList[3].push_back(mystrdup(iledgrid8x8_yellow));
     aChipList[3].push_back(mystrdup(iledgrid8x8_white));
+
+    aChipList[3].push_back(NULL);
+
+    aChipList[3].push_back(mystrdup(composite576i));
+    aChipList[3].push_back(mystrdup(composite480i));
 
     aChipList[3].push_back(NULL);
 

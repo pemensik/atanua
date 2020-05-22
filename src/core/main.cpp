@@ -1881,5 +1881,7 @@ int main(int argc,char** args)
 		draw_screen();
 	}
 
+	EmptyTextureStore();
+
 	return 0;
 }

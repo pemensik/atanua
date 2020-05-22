@@ -73,7 +73,7 @@ void Net::update()
         mHighFreqChanges = 0;
     }
     
-    mState = next;
+    mState = (netstates)next;
 }
 
 int Net::nextstate()

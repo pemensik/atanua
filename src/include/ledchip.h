@@ -11,7 +11,35 @@ freely, subject to the following restrictions:
 
 1. The origin of this software must not be misrepresented; you must not
 claim that you wrote the original software. If you use this software
-in a product, an acknowledgment in the product documentation would be
+in a product, an acknowledgment in the product docu
+
+GLuint load_blank_texture(const char* aFilename,int Clamp,int w,int h,unsigned long* src)
+{
+
+    GLenum a=glGetError();
+
+    if(a!=GL_NO_ERROR)
+    {
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR,"A","B",NULL);
+    }
+
+    glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,w,h,0,GL_RGBA,GL_UNSIGNED_BYTE,src);
+
+    a=glGetError();
+
+    if(a!=GL_NO_ERROR)
+    {
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR,"A","C",NULL);
+    }
+
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR); // Linear Filtering
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR); // Linear Filtering
+    //    do_loadtexture(aFilename,clamp);
+
+
+    return texname;
+}
+mentation would be
 appreciated but is not required.
 
 2. Altered source versions must be plainly marked as such, and must not be
