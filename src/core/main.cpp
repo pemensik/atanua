@@ -1693,7 +1693,7 @@ void initvideo()
 	//    bpp = info->vfmt->BitsPerPixel;
 	flags=SDL_WINDOW_OPENGL|SDL_WINDOW_RESIZABLE;
 
-	if((gWindow=SDL_CreateWindow("Blue Ble Ble",SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_UNDEFINED,gScreenWidth,gScreenHeight,flags))==0)
+	if((gWindow=SDL_CreateWindow("Atanua",SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_UNDEFINED,gScreenWidth,gScreenHeight,flags))==0)
 	{
 		fprintf(stderr,"Video mode set failed: %s\n",SDL_GetError());
 		SDL_Quit();

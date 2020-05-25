@@ -110,6 +110,7 @@ distribution.
 #include "extpin.h"
 
 #include "ChipTriState.h"
+#include "namedpin.h"
 
 
 static const char *led_red = "LED (red)";
@@ -346,6 +347,9 @@ static const char *extpin        = "External Pin";
 
 static const char* chipTriState       =   "ChipTriState";
 
+static const char* namedpin=    "Named Pin";
+
+
 BaseChipFactory::~BaseChipFactory()
 {
 }
@@ -577,6 +581,7 @@ Chip * BaseChipFactory::build(const char *aChipId)
     if (strcmp(stepper2, aChipId) == 0) return new StepperMotor(1);
 
     if(strcmp(chipTriState,aChipId)==0) return new ChipTriState(0);
+    if(strcmp(namedpin,aChipId)==0) return new NamedPin(1);
 
     int i;
     char temp[64];
@@ -632,11 +637,6 @@ Chip * BaseChipFactory::build(const char *aChipId)
 
 void BaseChipFactory::getSupportedChips(vector<char *> aChipList[5])
 {
-    aChipList[4].push_back(mystrdup(logic_low_chip));
-    aChipList[4].push_back(mystrdup(logic_high_chip));
-
-    aChipList[4].push_back(NULL);
-
     aChipList[0].push_back(mystrdup(and_chip));
     aChipList[0].push_back(mystrdup(or_chip));
     aChipList[0].push_back(mystrdup(nand_chip));
@@ -707,39 +707,101 @@ void BaseChipFactory::getSupportedChips(vector<char *> aChipList[5])
 
     aChipList[0].push_back(NULL);
 
-    aChipList[4].push_back(mystrdup(clock_01hz));
-    aChipList[4].push_back(mystrdup(clock_02hz));
-    aChipList[4].push_back(mystrdup(clock_05hz));
-    aChipList[4].push_back(mystrdup(clock_1hz));
-    aChipList[4].push_back(mystrdup(clock_2hz));
-    aChipList[4].push_back(mystrdup(clock_5hz));
-    aChipList[4].push_back(mystrdup(clock_10hz));
-    aChipList[4].push_back(mystrdup(clock_20hz));
-    aChipList[4].push_back(mystrdup(clock_50hz));
-    aChipList[4].push_back(mystrdup(clock_100hz));
-    aChipList[4].push_back(mystrdup(clock_200hz));
-    aChipList[4].push_back(mystrdup(clock_500hz));
-    aChipList[4].push_back(mystrdup(clock_1khz));
-    aChipList[4].push_back(mystrdup(clock_2khz));
-    aChipList[4].push_back(mystrdup(clock_5khz));
-    aChipList[4].push_back(mystrdup(clock_10khz));
-    aChipList[4].push_back(mystrdup(clock_20khz));
-    aChipList[4].push_back(mystrdup(clock_50khz));
+    aChipList[1].push_back(mystrdup(chip7400));
+    aChipList[1].push_back(mystrdup(chip7402));
+    aChipList[1].push_back(mystrdup(chip7404));
+    aChipList[1].push_back(mystrdup(chip7408));
+    aChipList[1].push_back(mystrdup(chip7410));
+    aChipList[1].push_back(mystrdup(chip7420));
+    aChipList[1].push_back(mystrdup(chip7432));
+    aChipList[1].push_back(mystrdup(chip7447));
+    aChipList[1].push_back(mystrdup(chip7473));
+    aChipList[1].push_back(mystrdup(chip7474));
+    aChipList[1].push_back(mystrdup(chip7485));
+    aChipList[1].push_back(mystrdup(chip7486));
+    aChipList[1].push_back(mystrdup(chip7489));
+    aChipList[1].push_back(mystrdup(chip7490));
+    aChipList[1].push_back(mystrdup(chip74138));
+    aChipList[1].push_back(mystrdup(chip74139));
+    aChipList[1].push_back(mystrdup(chip74151));
+    aChipList[1].push_back(mystrdup(chip74154));
+    aChipList[1].push_back(mystrdup(chip74163));
+    aChipList[1].push_back(mystrdup(chip74164));
+    aChipList[1].push_back(mystrdup(chip74165));
+    aChipList[1].push_back(mystrdup(chip74181));
+    aChipList[1].push_back(mystrdup(chip74191));
+    aChipList[1].push_back(mystrdup(chip74192));
+    aChipList[1].push_back(mystrdup(chip74193));
+    aChipList[1].push_back(mystrdup(chip74195));
+    aChipList[1].push_back(mystrdup(chip74240));
+    aChipList[1].push_back(mystrdup(chip74241));
+    aChipList[1].push_back(mystrdup(chip74244));
+    aChipList[1].push_back(mystrdup(chip74245));
+    aChipList[1].push_back(mystrdup(chip74283));
+    aChipList[1].push_back(mystrdup(chip74574));
 
-    aChipList[4].push_back(NULL);
+    aChipList[1].push_back(NULL);
 
-    aChipList[4].push_back(mystrdup(label_5));
-    aChipList[4].push_back(mystrdup(label_3));
-    aChipList[4].push_back(mystrdup(label_2));
-    aChipList[4].push_back(mystrdup(label_1));
-    aChipList[4].push_back(mystrdup(label_01));
+    aChipList[1].push_back(mystrdup(chip2051));
 
-    aChipList[4].push_back(NULL);
+    aChipList[1].push_back(NULL);
 
-    aChipList[4].push_back(mystrdup(extpin));
+    aChipList[1].push_back(mystrdup(chip2708));
+    aChipList[1].push_back(mystrdup(chip2716));
+    aChipList[1].push_back(mystrdup(chip2732));
 
-	aChipList[4].push_back(NULL);
+    aChipList[1].push_back(NULL);
 
+    aChipList[1].push_back(mystrdup(chip6116));
+
+    aChipList[1].push_back(NULL);
+
+    int i;
+    char temp[64];
+    for(i=0; i<10; i++)
+    {
+        sprintf(temp,button_basestring,'0'+i);
+        aChipList[2].push_back(mystrdup(temp));
+    }
+
+    aChipList[2].push_back(NULL);
+
+    for(i=0; i<26; i++)
+    {
+        sprintf(temp,button_basestring,'a'+i);
+        aChipList[2].push_back(mystrdup(temp));
+    }
+
+    aChipList[2].push_back(NULL);
+
+    aChipList[2].push_back(mystrdup(button_space));
+    aChipList[2].push_back(mystrdup(button_shift));
+    aChipList[2].push_back(mystrdup(button_return));
+
+    aChipList[2].push_back(NULL);
+
+    for(i=0; i<10; i++)
+    {
+        sprintf(temp,switch_basestring,'0'+i);
+        aChipList[2].push_back(mystrdup(temp));
+    }
+
+    aChipList[2].push_back(NULL);
+
+    for(i=0; i<26; i++)
+    {
+        sprintf(temp,switch_basestring,'a'+i);
+        aChipList[2].push_back(mystrdup(temp));
+    }
+
+    aChipList[2].push_back(NULL);
+
+    aChipList[2].push_back(mystrdup(switch_space));
+    aChipList[2].push_back(mystrdup(switch_shift));
+    aChipList[2].push_back(mystrdup(switch_return));
+
+    aChipList[2].push_back(NULL);
+   
 	aChipList[3].push_back(mystrdup(led_red));
     aChipList[3].push_back(mystrdup(led_green));
     aChipList[3].push_back(mystrdup(led_blue));
@@ -858,103 +920,46 @@ void BaseChipFactory::getSupportedChips(vector<char *> aChipList[5])
 
     aChipList[3].push_back(NULL);
 
+    aChipList[4].push_back(mystrdup(logic_low_chip));
+    aChipList[4].push_back(mystrdup(logic_high_chip));
 
-    aChipList[1].push_back(mystrdup(chip7400));
-    aChipList[1].push_back(mystrdup(chip7402));
-    aChipList[1].push_back(mystrdup(chip7404));
-    aChipList[1].push_back(mystrdup(chip7408));
-    aChipList[1].push_back(mystrdup(chip7410));
-    aChipList[1].push_back(mystrdup(chip7420));
-    aChipList[1].push_back(mystrdup(chip7432));
-    aChipList[1].push_back(mystrdup(chip7447));
-    aChipList[1].push_back(mystrdup(chip7473));
-    aChipList[1].push_back(mystrdup(chip7474));
-    aChipList[1].push_back(mystrdup(chip7485));
-    aChipList[1].push_back(mystrdup(chip7486));
-	aChipList[1].push_back(mystrdup(chip7489));
-    aChipList[1].push_back(mystrdup(chip7490));
-    aChipList[1].push_back(mystrdup(chip74138));
-    aChipList[1].push_back(mystrdup(chip74139));
-    aChipList[1].push_back(mystrdup(chip74151));
-    aChipList[1].push_back(mystrdup(chip74154));
-    aChipList[1].push_back(mystrdup(chip74163));
-    aChipList[1].push_back(mystrdup(chip74164));
-    aChipList[1].push_back(mystrdup(chip74165));
-    aChipList[1].push_back(mystrdup(chip74181));
-    aChipList[1].push_back(mystrdup(chip74191));
-    aChipList[1].push_back(mystrdup(chip74192));
-    aChipList[1].push_back(mystrdup(chip74193));
-    aChipList[1].push_back(mystrdup(chip74195));
-    aChipList[1].push_back(mystrdup(chip74240));
-    aChipList[1].push_back(mystrdup(chip74241));
-    aChipList[1].push_back(mystrdup(chip74244));
-    aChipList[1].push_back(mystrdup(chip74245));
-    aChipList[1].push_back(mystrdup(chip74283));
-    aChipList[1].push_back(mystrdup(chip74574));
+    aChipList[4].push_back(NULL);
 
-    aChipList[1].push_back(NULL);
+    aChipList[4].push_back(mystrdup(clock_01hz));
+    aChipList[4].push_back(mystrdup(clock_02hz));
+    aChipList[4].push_back(mystrdup(clock_05hz));
+    aChipList[4].push_back(mystrdup(clock_1hz));
+    aChipList[4].push_back(mystrdup(clock_2hz));
+    aChipList[4].push_back(mystrdup(clock_5hz));
+    aChipList[4].push_back(mystrdup(clock_10hz));
+    aChipList[4].push_back(mystrdup(clock_20hz));
+    aChipList[4].push_back(mystrdup(clock_50hz));
+    aChipList[4].push_back(mystrdup(clock_100hz));
+    aChipList[4].push_back(mystrdup(clock_200hz));
+    aChipList[4].push_back(mystrdup(clock_500hz));
+    aChipList[4].push_back(mystrdup(clock_1khz));
+    aChipList[4].push_back(mystrdup(clock_2khz));
+    aChipList[4].push_back(mystrdup(clock_5khz));
+    aChipList[4].push_back(mystrdup(clock_10khz));
+    aChipList[4].push_back(mystrdup(clock_20khz));
+    aChipList[4].push_back(mystrdup(clock_50khz));
 
-    aChipList[1].push_back(mystrdup(chip2051));
+    aChipList[4].push_back(NULL);
 
-    aChipList[1].push_back(NULL);
+    aChipList[4].push_back(mystrdup(label_5));
+    aChipList[4].push_back(mystrdup(label_3));
+    aChipList[4].push_back(mystrdup(label_2));
+    aChipList[4].push_back(mystrdup(label_1));
+    aChipList[4].push_back(mystrdup(label_01));
 
-    aChipList[1].push_back(mystrdup(chip2708));
-    aChipList[1].push_back(mystrdup(chip2716));
-    aChipList[1].push_back(mystrdup(chip2732));
+    aChipList[4].push_back(NULL);
 
-    aChipList[1].push_back(NULL);
+    aChipList[4].push_back(mystrdup(extpin));
+    aChipList[4].push_back(mystrdup(namedpin));
 
-    aChipList[1].push_back(mystrdup(chip6116));
-
-    aChipList[1].push_back(NULL);
-
-    int i;
-    char temp[64];
-    for (i = 0; i < 10; i++)
-    {
-        sprintf(temp, button_basestring, '0' + i);
-        aChipList[2].push_back(mystrdup(temp));
-    }
-
-    aChipList[2].push_back(NULL);
-
-    for (i = 0; i < 26; i++)
-    {
-        sprintf(temp, button_basestring, 'a' + i);
-        aChipList[2].push_back(mystrdup(temp));
-    }
-
-    aChipList[2].push_back(NULL);
+    aChipList[4].push_back(NULL);
     
-	aChipList[2].push_back(mystrdup(button_space));
-    aChipList[2].push_back(mystrdup(button_shift));
-    aChipList[2].push_back(mystrdup(button_return));
-
-	aChipList[2].push_back(NULL);
-
-    for (i = 0; i < 10; i++)
-    {
-        sprintf(temp, switch_basestring, '0' + i);
-        aChipList[2].push_back(mystrdup(temp));
-    }
-
-    aChipList[2].push_back(NULL);
-
-    for (i = 0; i < 26; i++)
-    {
-        sprintf(temp, switch_basestring, 'a' + i);
-        aChipList[2].push_back(mystrdup(temp));
-    }
-
-    aChipList[2].push_back(NULL);
-    
-	aChipList[2].push_back(mystrdup(switch_space));
-    aChipList[2].push_back(mystrdup(switch_shift));
-    aChipList[2].push_back(mystrdup(switch_return));
-
-	aChipList[2].push_back(NULL);
-
-	aChipList[4].push_back(mystrdup("LogicProbe"));
+    aChipList[4].push_back(mystrdup("LogicProbe"));
     aChipList[4].push_back(NULL);
     aChipList[4].push_back(mystrdup(audiochip));
     aChipList[4].push_back(NULL);

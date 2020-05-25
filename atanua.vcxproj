@@ -209,6 +209,7 @@
     <ClCompile Include="src\chip\chip7489.cpp" />
     <ClCompile Include="src\chip\chip7490.cpp" />
     <ClCompile Include="src\chip\clockchip.cpp" />
+    <ClCompile Include="src\chip\composite.cpp" />
     <ClCompile Include="src\chip\dchip.cpp" />
     <ClCompile Include="src\chip\dflipflop.cpp" />
     <ClCompile Include="src\chip\dxchip.cpp" />
@@ -221,6 +222,7 @@
     <ClCompile Include="src\chip\ledgrid.cpp" />
     <ClCompile Include="src\chip\logicprobe.cpp" />
     <ClCompile Include="src\chip\muxchip.cpp" />
+    <ClCompile Include="src\chip\namedpin.cpp" />
     <ClCompile Include="src\chip\nand3chip.cpp" />
     <ClCompile Include="src\chip\nand8chip.cpp" />
     <ClCompile Include="src\chip\nandchip.cpp" />
@@ -317,6 +319,7 @@
     <ClInclude Include="src\include\chip7490.h" />
     <ClInclude Include="src\include\ChipTriState.h" />
     <ClInclude Include="src\include\clockchip.h" />
+    <ClInclude Include="src\include\composite.h" />
     <ClInclude Include="src\include\dchip.h" />
     <ClInclude Include="src\include\dflipflop.h" />
     <ClInclude Include="src\include\dxchip.h" />
@@ -331,6 +334,7 @@
     <ClInclude Include="src\include\logicprobe.h" />
     <ClInclude Include="src\include\mersennetwister.h" />
     <ClInclude Include="src\include\muxchip.h" />
+    <ClInclude Include="src\include\namedpin.h" />
     <ClInclude Include="src\include\nand3chip.h" />
     <ClInclude Include="src\include\nand8chip.h" />
     <ClInclude Include="src\include\nandchip.h" />

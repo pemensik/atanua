@@ -50,7 +50,7 @@ AtanuaConfig::AtanuaConfig()
     mUseBlending = 1;
 	mMaxActiveBoxes = 200;
 	mLEDSamples = 40;
-	mPhysicsKHz = 1;
+	mPhysicsKHz = 500;
 	mAutosaveDir = 0;
 	mAutosaveCount = 10;
 	mAutosaveEnable = 0;

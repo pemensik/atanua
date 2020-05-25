@@ -26,7 +26,7 @@ distribution.
 
 Composite::Composite(CType aSize)
 {
- 	mSize = aSize;
+	mSize=aSize;
 	mPins=3;
 
 	mInSyncCount=0;
@@ -42,9 +42,9 @@ Composite::Composite(CType aSize)
 		mySize=625;
 	}
 
-	set(0, 0, mxSize/16, mySize/16, NULL);
+	set(0,0,mxSize/16,mySize/16,NULL);
 
-	mInputPin = new Pin[mPins];
+	mInputPin=new Pin[mPins];
 
 	int i;
 	for(i=0; i<mPins; i++)
@@ -52,7 +52,7 @@ Composite::Composite(CType aSize)
 		mPin.push_back(&mInputPin[i]);
 	}
 
-	mPinDescription = new char*[mPins];
+	mPinDescription=new char* [mPins];
 
 	float ypos=0.2;
 
@@ -61,7 +61,7 @@ Composite::Composite(CType aSize)
 	mInputPin[2].set(0,4+ypos,this,"Clk");
 
 	mBaseTexture=create_blank_texture("composite_base",1,mxSize,mySize);
-	
+
 	for(i=0; i<mPins; i++)
 	{
 		mInputPin[i].mReadOnly=1;
@@ -80,8 +80,8 @@ Composite::Composite(CType aSize)
 }
 
 Composite::~Composite()
-{ 
-	delete[] mInputPin;	
+{
+	delete[] mInputPin;
 	int i;
 
 
@@ -108,7 +108,7 @@ void Composite::render(int aChipId)
 {
 	unsigned long* RawBitMap;
 
-	if(FindTextBitmap("composite_base",(unsigned char **)&RawBitMap))
+	if(FindTextBitmap("composite_base",(unsigned char**)&RawBitMap))
 	{
 		glBindTexture(GL_TEXTURE_2D,mBaseTexture);
 		glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP);
@@ -127,8 +127,9 @@ void Composite::render(int aChipId)
 		glEnd();
 		glDisable(GL_TEXTURE_2D);
 	}
-}   
+}
 
+#define PicStart 50
 
 void Composite::update(float aTick)
 {
@@ -156,53 +157,66 @@ void Composite::update(float aTick)
 				}
 				else
 				{
-					if(SPin==NETSTATE_HIGH&&!mInHSync)
+					if(FindTextBitmap("composite_base",(unsigned char**)&RawBitMap))
 					{
-						mInHSync=true;
-						mScanX=0;
-						mScanY++;
-						if(mScanY>mMaxY)
+						if(SPin==NETSTATE_HIGH&&!mInHSync)
 						{
-							mMaxY=mScanY;
-						}
-						mInSyncCount=0;
-
-					}
-					else if(SPin==NETSTATE_HIGH&&mInHSync)
-					{
-						mInSyncCount++;
-						if(mInSyncCount>35 && !mInVSync)
-						{
+							mInHSync=true;
 							mScanX=0;
-							mScanY=0;
-							mInVSync=true;
-						}
-						else if(mInSyncCount>35&&mInVSync)
-						{
-							if(mScanX>=mMaxX)
+							mScanY++;
+							if(mScanY>mMaxY)
 							{
+								mMaxY=mScanY;
+							}
+							mInSyncCount=0;
+
+						}
+						else if(SPin==NETSTATE_HIGH&&mInHSync)
+						{
+							mInSyncCount++;
+							if(mInSyncCount>35&&!mInVSync)
+							{
+								mScanX=0;
+								mScanY=0;
+								mInVSync=true;
+							}
+							else if(mInSyncCount>35&&mInVSync)
+							{
+								if(mScanX>=mMaxX)
+								{
+									mScanX=0;
+									mScanY++;
+								}
+							}
+						}
+						else if(SPin==NETSTATE_LOW&&mInHSync)
+						{
+							mInHSync=false;
+							if(mInVSync)
+							{
+								mInVSync=false;
 								mScanX=0;
 								mScanY++;
 							}
-						}
-					}
-					else if(SPin==NETSTATE_LOW&&mInHSync)
-					{
-						mInHSync=false;
-						if(mInVSync)
-						{
-							mInVSync=false;
-							mScanX=0;
-							mScanY++;
-						}
-					}
-					else
-					{
-						//				mScanX++;
-					}
 
-					if(FindTextBitmap("composite_base",(unsigned char**)&RawBitMap))
-					{
+							PixVal=0xFFFF0000;
+
+							for(; mScanX<PicStart; mScanX++)
+							{
+								if(RawBitMap[mScanY*mxSize+mScanX]!=PixVal)
+								{
+									RawBitMap[mScanY*mxSize+mScanX]=PixVal;
+									mDirty=1;
+								}
+							}
+
+							//						mScanX=PicStart; //Doesn't matter length of reset signal should start in same place.
+						}
+						else
+						{
+							//				mScanX++;
+						}
+
 						if(mInVSync)
 						{
 							PixVal=0xFF0000FF;
@@ -245,4 +259,4 @@ void Composite::update(float aTick)
 			}
 		}
 	}
-}    
+}

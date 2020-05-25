@@ -1,4 +1,4 @@
-/*
+﻿/*
 Atanua Real-Time Logic Simulator
 Copyright (c) 2008-2014 Jari Komppa
 
@@ -24,7 +24,7 @@ distribution.
 #define ATANUA_INTERNAL_H
 
 
-#define ATANUAVERSION "1.3.141220"
+#define ATANUAVERSION "1β4(JB!JK)"
 
 #ifdef __APPLE__
 #define ATANUAPLATFORM "OSX"
@@ -69,12 +69,14 @@ enum dragmodes
 
 class ExtPin;
 class Pin;
+class NamedPin;
 
 class BoxStitchingInformation
 {
 public:
 	vector<char*> mToolTips;
 	vector<ExtPin*> mExtPinsInside;
+	vector<NamedPin*> mNamedPinsInside;
 	Pin *mExtPinOutside;
 	BoxStitchingInformation();
 	~BoxStitchingInformation();
