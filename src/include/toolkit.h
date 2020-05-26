@@ -59,9 +59,11 @@ distribution.
 #include <windows.h> // needed to get GL stuff to work
 #include <SDL.h>
 #include "stb/stb_image.h"
-#include "glee/glee.h"
+#include "gl\glew.h"
+//#include "glee/glee.h"
 #include <GL/gl.h>
-#include <GL/glu.h>
+
+#include <GL/glut.h>
 #define stricmp _stricmp
 #define strdup _strdup
 #endif

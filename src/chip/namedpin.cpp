@@ -25,6 +25,14 @@ distribution.
 #include "namedpin.h"
 #include "box.h"
 
+list<NamedPin*> NamedPin::mNamedPins;
+
+
+NamedPin::~NamedPin()
+{
+	mNamedPins.remove(this);
+}
+
 NamedPin::NamedPin(float aSize) : Label(aSize)
 {
 	mPin.push_back(&mInputPin);
@@ -41,6 +49,7 @@ NamedPin::NamedPin(float aSize) : Label(aSize)
 	}
 
 	mInputPin.mReadOnly=1;
+	mNamedPins.push_back(this);
 }
 
 void NamedPin::render(int aChipId)
@@ -49,9 +58,45 @@ void NamedPin::render(int aChipId)
 	mX+=0.75;
 	Label::render(aChipId);
 	mX-=0.75;
+
 }
 
-void NamedPin::update(float aTick)
+
+void NamedPin::tool()
 {
-
+	if(mData!=mPinName)
+	{
+		for(list<NamedPin*>::iterator it=mNamedPins.begin(); it!=mNamedPins.end(); ++it)
+		{
+			if(*it!=this)
+			{
+				if((*it)->mPinName==mPinName)
+				{
+					delete_wire(&mInputPin,&(*it)->mInputPin,LineType::NAMEDPINWIRE);
+//					break;
+				}
+			}
+		}
+		mPinName=mData;
+		for(list<NamedPin*>::iterator it=mNamedPins.begin(); it!=mNamedPins.end(); ++it)
+		{
+			if(*it!=this)
+			{
+				if((*it)->mPinName==mPinName)
+				{
+					add_wire(&mInputPin,&(*it)->mInputPin,LineType::NAMEDPINWIRE);
+//					break;
+				}
+			}
+		}
+	}
 }
+
+void NamedPin::Magic()
+{
+	for(list<NamedPin*>::iterator it=mNamedPins.begin(); it!=mNamedPins.end(); ++it)
+	{
+		(*it)->tool();
+	}
+}
+

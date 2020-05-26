@@ -27,6 +27,7 @@ distribution.
 #include "basechipfactory.h"
 #include "pluginchipfactory.h"
 
+#include "namedpin.h"
 #include "stb/stb_image_write.h"
 
 #define C_MENUBG 0xff3f4f4f
@@ -801,6 +802,8 @@ static void draw_screen()
 		}
 	}
 
+	NamedPin::Magic();
+
 	if(gUIState.mousex>gConfig.mToolkitWidth&&gUIState.mousey>40)
 	{
 		if(gDragMode==DRAGMODE_NONE)
@@ -1400,7 +1403,7 @@ static void draw_screen()
 	for(i=0; i<(signed)gWire.size(); i++)
 	{
 		// Don't draw items in boxes
-		if(gWire[i]->mBox!=0)
+		if(gWire[i]->mBox!=0 || gWire[i]->mType==LineType::NAMEDPINWIRE)
 			continue;
 
 		float rc,bc,gc;
@@ -1681,6 +1684,8 @@ void initvideo()
 	int flags=0;
 	//    info = SDL_GetVideoInfo();
 
+
+
 	gRenderDriverIndex=1;
 
 	if(SDL_GetRenderDriverInfo(gRenderDriverIndex,&info)<0)
@@ -1796,6 +1801,7 @@ int main(int argc,char** args)
 		SDL_Quit();
 		exit(0);
 	}
+
 
 	if(gConfig.mAudioEnable)
 	{

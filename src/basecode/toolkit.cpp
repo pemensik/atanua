@@ -1157,6 +1157,8 @@ static void load_blank_texture(texpair &Tex)
 }
 
 
+
+
 GLuint create_blank_texture(const char* aFilename,int Clamp,int w,int h)
 {
     // First check if we have loaded this texture already
@@ -1184,7 +1186,21 @@ GLuint create_blank_texture(const char* aFilename,int Clamp,int w,int h)
         }
     }
 
+#if 0    // If using GLEW version 1.13 or earlier
+    glewExperimental=TRUE;
+    GLenum err=glewInit();
+    if(err!=GLEW_OK)
+    {
+        // Problem: glewInit failed, something is seriously wrong.
+//		cout<<"glewInit failed: "<<glewGetErrorString(err)<<endl;
+        exit(1);
+    }
 
+    GLuint FramebufferName=0;
+    
+    glGenFramebuffers(1,&FramebufferName);
+    glBindFramebuffer(GL_FRAMEBUFFER,FramebufferName);
+#endif
     GLuint texname;
     glGenTextures(1,&texname);
     glBindTexture(GL_TEXTURE_2D,texname);
@@ -1202,6 +1218,7 @@ GLuint create_blank_texture(const char* aFilename,int Clamp,int w,int h)
 
         Tex->mFilename=mystrdup(aFilename);
         Tex->mHandle=texname;
+//        Tex->mFramebufferName=FramebufferName;
         Tex->mClamp=Clamp;
         Tex->RawBitMap=(unsigned char*)src;
         Tex->mxSize=w;

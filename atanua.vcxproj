@@ -65,8 +65,8 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <WholeProgramOptimization>true</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>src\include\;src\;src\tinyxml_2_5_3\tinyxml;C:\Users\John Bradley\source\SDL2-2.0.12\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>src\include\;src\;src\tinyxml_2_5_3\tinyxml;C:\Users\John Bradley\source\SDL2-2.0.12\include;C:\opengl\glew\include\;C:\opengl\glfw-3.3.2.bin.WIN64\include\GLFW;C:\opengl\freeglut\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;GLEW_STATIC;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <ExceptionHandling>Sync</ExceptionHandling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -90,10 +90,10 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;opengl32.lib;glu32.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;odbc32.lib;odbccp32.lib;glew32s.lib;Opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>.\Release\Atanua.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>C:\Users\John Bradley\source\SDL2-2.0.12\lib\x86;\libraries\SDL-1.2.13\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\opengl\freeglut\lib;C:\opengl\glew\lib\Release\Win32;C:\Users\John Bradley\source\SDL2-2.0.12\lib\x86;\libraries\SDL-1.2.13\lib;%(AdditionalLibraryDirectories);C:\opengl\glew-2.1.0\lib\Release\x64;C:\opengl\glfw-3.3.2.bin.WIN64\lib-vc2019</AdditionalLibraryDirectories>
       <ProgramDatabaseFile>.\Release/atanua.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
@@ -117,8 +117,8 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>src\include\;src\;src\tinyxml_2_5_3\tinyxml;C:\Users\John Bradley\source\SDL2-2.0.12\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>src\include\;src\;src\tinyxml_2_5_3\tinyxml;C:\Users\John Bradley\source\SDL2-2.0.12\include;C:\opengl\glew\include\;C:\opengl\glfw-3.3.2.bin.WIN64\include\GLFW;C:\opengl\freeglut\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;GLEW_STATIC;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <BufferSecurityCheck>true</BufferSecurityCheck>
@@ -139,11 +139,11 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;opengl32.lib;glu32.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;odbc32.lib;odbccp32.lib;glew32sd.lib;Opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ShowProgress>NotSet</ShowProgress>
       <OutputFile>.\Debug\Atanua.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>C:\Users\John Bradley\source\SDL2-2.0.12\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\opengl\freeglut\lib;C:\opengl\glew\lib\Debug\Win32;C:\Users\John Bradley\source\SDL2-2.0.12\lib\x86;%(AdditionalLibraryDirectories);C:\opengl\glew-2.1.0\lib\Release\x64;C:\opengl\glfw-3.3.2.bin.WIN64\lib-vc2019</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>.\Debug/atanua.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>

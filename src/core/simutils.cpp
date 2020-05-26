@@ -43,10 +43,13 @@ int gDirtyNets = 0;
 
 void do_build_nets();
 
-void build_nets()
+void build_nets(bool DoClear)
 {
     // Clear the drag mode just in case
-    do_cancel();
+    if(DoClear)
+    {
+        do_cancel();
+    }
 
 	if (!gDirtyNets)
 	{
@@ -382,15 +385,34 @@ float line_point_distance(float x0, float y0, float x1, float y1, float x2, floa
 
 
 
-void add_wire(Pin *aFirst, Pin *aSecond)
+void add_wire(Pin *aFirst, Pin *aSecond,LineType Type)
 {
     int i;
     for (i = 0; i < (signed)gWire.size(); i++)
         if ((gWire[i]->mFirst == aFirst && gWire[i]->mSecond == aSecond) ||
             (gWire[i]->mFirst == aSecond && gWire[i]->mSecond == aFirst))
             return; // no duplicate wires
-    gWire.push_back(new Wire(aFirst, aSecond));                        
-    build_nets();
+
+    Wire* nw=new Wire(aFirst,aSecond,Type);
+
+    gWire.push_back(nw);                        
+
+    build_nets(Type!=LineType::NAMEDPINWIRE);
+}
+
+void delete_wire(Pin* aFirst,Pin* aSecond,LineType Type)
+{
+    int i;
+    for(i=0; i<(signed)gWire.size(); i++)
+    {
+        if((gWire[i]->mFirst==aFirst&&gWire[i]->mSecond==aSecond)||
+            (gWire[i]->mFirst==aSecond&&gWire[i]->mSecond==aFirst))
+        {
+            gWire.erase(gWire.begin()+i);
+            build_nets(Type!=LineType::NAMEDPINWIRE);
+            break;
+        }
+    }
 }
 
 extern void resetfilename();

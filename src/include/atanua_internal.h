@@ -137,10 +137,15 @@ extern SDL_Window* gWindow;
 
 extern int gRenderDriverIndex;
 
-extern void build_nets();
+extern void build_nets(bool Clr=true);
 extern void delete_chip(Chip *c);
 extern float line_point_distance(float x0, float y0, float x1, float y1, float x2, float y2);
-extern void add_wire(Pin *aFirst, Pin *aSecond);
+
+
+
+extern void add_wire(Pin *aFirst, Pin *aSecond,LineType Vis=LineType::NORMAL);
+extern	void delete_wire(Pin* aFirst,Pin* aSecond,LineType Vis=LineType::NORMAL);
+
 
 extern void do_cancel();
 extern void do_reset();

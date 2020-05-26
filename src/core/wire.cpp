@@ -28,13 +28,15 @@ Wire::Wire()
     mFirst = mSecond = 0; 
     mKey = SDL_GetTicks();
     mMultiSelectState = 0;
+    mType=LineType::NORMAL;
 }
 
-Wire::Wire(Pin *aFirst, Pin *aSecond)
+Wire::Wire(Pin *aFirst, Pin *aSecond,LineType Vis)
 {
 	mBox = 0;
     mFirst = aFirst;
     mSecond = aSecond;
     mKey = SDL_GetTicks();
     mMultiSelectState = 0;
+    mType=Vis;
 }

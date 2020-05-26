@@ -29,13 +29,21 @@ class NamedPin : public Label
 {
     Pin mInputPin;  // Chip's pin
 
+	string mPinName;
+
 public:
 	NamedPin(float aSize);
+	~NamedPin();
+
 	const char* getLabel() { return mData.c_str(); }
 	virtual void render(int aChipId);
-//	virtual int isUselessInBox() { return 0; }
-	virtual void update(float aTick);
 
+
+
+	static void Magic();
+	void tool();
+
+	static list<NamedPin*> mNamedPins;
 };
 
 #endif

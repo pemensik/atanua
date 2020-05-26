@@ -21,6 +21,7 @@ misrepresented as being the original software.
 distribution.
 */
 #include <vector>
+#include <list>
 #include "toolkit.h"
 
 using namespace std;
@@ -143,6 +144,12 @@ public:
 	virtual int isUselessInBox() { return 0; }
 };
 
+typedef enum
+{
+    NORMAL,
+    NAMEDPINWIRE
+} LineType;
+
 class Wire
 {
 public:
@@ -157,7 +164,9 @@ public:
     // Ctor
     Wire();
     // CTor with value setup
-    Wire(Pin *aFirst, Pin *aSecond);
+    Wire(Pin *aFirst, Pin *aSecond,LineType Vis=LineType::NORMAL);
+
+    LineType mType;
 };
 
 class ChipFactory
