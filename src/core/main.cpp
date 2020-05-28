@@ -61,7 +61,11 @@ vector<File*> gRedoStack;
 vector<BoxcacheData> gBoxCache;
 
 vector<Chip*> gMultiSelectChip;
+vector<int> gMultiSelectChipId;
+
 vector<Wire*> gMultiSelectWire;
+vector<int> gMultiSelectWireId;
+
 int gMultiselectDirty=1;
 
 AtanuaConfig gConfig;
@@ -452,6 +456,7 @@ void multiselect_active()
 		if(gChip[id]->mMultiSelectState==0)
 		{
 			gMultiSelectChip.push_back(gChip[id]);
+			gMultiSelectChipId.push_back(id);
 			gChip[id]->mMultiSelectState=1;
 		}
 	}
@@ -642,7 +647,9 @@ static void draw_screen()
 					{
 						// clear multiselect if any
 						gMultiSelectChip.clear();
+						gMultiSelectChipId.clear();
 						gMultiSelectWire.clear();
+						gMultiSelectWireId.clear();
 						gMultiselectDirty=1;
 						int j;
 						for(j=0; gNewChip==NULL&&j<(signed)gChipFactory.size(); j++)
@@ -841,9 +848,11 @@ static void draw_screen()
 							gUIState.kbditem=gUIState.activeitem;
 						if(gWire[i]->mMultiSelectState==0&&!(gUIState.keymod&gSelectKeyMask))
 						{
-							gMultiselectDirty=1;
-							gMultiSelectWire.clear();
 							gMultiSelectChip.clear();
+							gMultiSelectChipId.clear();
+							gMultiSelectWire.clear();
+							gMultiSelectWireId.clear();
+							gMultiselectDirty=1;
 						}
 					}
 				}
@@ -880,6 +889,8 @@ static void draw_screen()
 						if(gChip[i]->mMultiSelectState==0)
 						{
 							gMultiSelectChip.push_back(gChip[i]);
+							gMultiSelectChipId.push_back(i);
+
 							gChip[i]->mMultiSelectState=1;
 						}
 						gMultiselectDirty=1;
@@ -896,10 +907,12 @@ static void draw_screen()
 						{
 							gMultiselectDirty=1;
 							gMultiSelectWire.clear();
+							gMultiSelectWireId.clear();
 							gMultiSelectChip.clear();
+							gMultiSelectChipId.clear();
+
 						}
 					}
-
 				}
 			}
 		}
@@ -1004,7 +1017,9 @@ static void draw_screen()
 				{
 					gMultiselectDirty=1;
 					gMultiSelectWire.clear();
+					gMultiSelectWireId.clear();
 					gMultiSelectChip.clear();
+					gMultiSelectChipId.clear();
 				}
 			}
 		}
@@ -1026,6 +1041,7 @@ static void draw_screen()
 					if(gChip[i]->mMultiSelectState==0)
 					{
 						gMultiSelectChip.push_back(gChip[i]);
+						gMultiSelectChipId.push_back(i);
 						gChip[i]->mMultiSelectState=1;
 					}
 				}
@@ -1069,52 +1085,207 @@ static void draw_screen()
 			}
 		}
 
+
+		bool MultiClone=false;
+
+		if(gDragMode==DRAGMODE_SELECT && gMultiSelectChip.size() && (gUIState.mousedownkeymod&gCloneKeyMask))
+		{
+			// multiselect mode
+			if(gUIState.keyentered==KMOD_RSHIFT||
+				gUIState.keyentered==KMOD_LSHIFT)
+			{
+				MultiClone=true;
+			}
+		}
+
 		// If a chip is ctrl-dragged, clone the chip
 		if(gDragMode==DRAGMODE_NONE&&IS_CHIP_ID(gUIState.activeitem)&&(gUIState.mousedownkeymod&gCloneKeyMask))
 		{
 			float dist=sqrt(((float)gUIState.mousex-(float)gUIState.mousedownx)*((float)gUIState.mousex-(float)gUIState.mousedownx)+
 				((float)gUIState.mousey-(float)gUIState.mousedowny)*((float)gUIState.mousey-(float)gUIState.mousedowny));
+
+
+
 			if(dist>gConfig.mChipCloneDragDistance)
 			{
 				save_undo();
+
 				// clear multiselect if any
-				gMultiSelectChip.clear();
-				gMultiSelectWire.clear();
-				gMultiselectDirty=1;
-				int oldchipid=GET_CHIP_ID(gUIState.activeitem);
-				gNewChip=NULL;
-				for(i=0; gNewChip==NULL&&i<(signed)gChipFactory.size(); i++)
+//				gMultiselectDirty=1;
+//				gMultiSelectWire.clear();
+//				gMultiSelectWireId.clear();
+//				gMultiSelectChip.clear();
+//				gMultiSelectChipId.clear();
+
+				if(gMultiSelectChip.size()<2)
 				{
-					gNewChip=gChipFactory[i]->build(gChipName[oldchipid]);
+					int oldchipid=GET_CHIP_ID(gUIState.activeitem);
+					gNewChip=NULL;
+					for(i=0; gNewChip==NULL&&i<(signed)gChipFactory.size(); i++)
+					{
+						gNewChip=gChipFactory[i]->build(gChipName[oldchipid]);
+					}
+
+					if(gNewChip)
+					{
+						gNewChipName=gChipName[oldchipid];
+
+						gChip.push_back(gNewChip);
+						gChipName.push_back(gNewChipName);
+						gNewChip->mX=worldmousex-gNewChip->mW/2;
+						gNewChip->mY=worldmousey-gNewChip->mH/2;
+
+						gNewChip->rotate(gChip[oldchipid]->mAngleIn90DegreeSteps);
+						gUIState.mousedownx=gUIState.mousex;
+						gUIState.mousedowny=gUIState.mousey;
+						gUIState.mousedownkeymod&=~gCloneKeyMask; // stop cloning
+
+						gChip[oldchipid]->clone(gNewChip);
+
+						int i;
+						for(i=0; i<(signed)gChip.size(); i++)
+						{
+							if(gChip[i]==gNewChip)
+							{
+								gUIState.activeitem=CHIP_ID(0,i);
+							}
+						}
+						gUIState.hotitem=gUIState.activeitem;
+						gUIState.kbditem=gUIState.activeitem;
+						gNewChip=NULL;
+						gNewChipName=NULL;
+					}
 				}
-
-				if(gNewChip)
+				else
 				{
-					gNewChipName=gChipName[oldchipid];
+					vector<Chip*> lNewChips;
+					vector<int> lOldChipId;
+					vector<Chip*> lOldChips;
+					int j=0;
+					int ActineInG=-1;
 
-					gChip.push_back(gNewChip);
-					gChipName.push_back(gNewChipName);
-					gNewChip->mX=worldmousex-gNewChip->mW/2;
-					gNewChip->mY=worldmousey-gNewChip->mH/2;
+					for(vector<int>::iterator it=gMultiSelectChipId.begin(); it!=gMultiSelectChipId.end(); ++it,j++)
+					{
+						int oldchipid=*it;
+						
+						if(gUIState.activeitem==CHIP_ID(0,j))
+						{
+							ActineInG=j;
+						}
 
-					gNewChip->rotate(gChip[oldchipid]->mAngleIn90DegreeSteps);
+						gNewChip=NULL;
+						for(i=0; gNewChip==NULL&&i<(signed)gChipFactory.size(); i++)
+						{
+							gNewChip=gChipFactory[i]->build(gChipName[oldchipid]);
+
+							if(gNewChip)
+							{
+								lNewChips.push_back(gNewChip);
+								lOldChipId.push_back(oldchipid);
+								lOldChips.push_back(gMultiSelectChip[j]);
+							}
+						}
+					}
+
+					j=0;
+					gMultiSelectChipId.clear();
+					gMultiSelectChip.clear();
+
+					for(vector<Chip*>::iterator it=lNewChips.begin(); it!=lNewChips.end(); ++it,j++)
+					{
+						Chip* lOldChip=NULL;
+						int OldChipId=lOldChipId[j];
+
+						gNewChip=lNewChips[j];
+						lOldChip=gChip[OldChipId];
+
+						gNewChipName=gChipName[OldChipId];
+
+						gChip.push_back(gNewChip);
+						gChipName.push_back(gNewChipName);
+						gNewChip->mX=lOldChip->mX+(gUIState.mousex-gUIState.mousedownx)/gZoomFactor;
+						gNewChip->mY=lOldChip->mY+(gUIState.mousey-gUIState.mousedowny)/gZoomFactor;
+
+						gNewChip->rotate(gChip[lOldChipId[j]]->mAngleIn90DegreeSteps);
+						gChip[lOldChipId[j]]->clone(gNewChip);
+
+						for(int i=0; i<(signed)gChip.size(); i++)
+						{
+							if(gChip[i]==gNewChip)
+							{
+								gMultiSelectChip.push_back(gNewChip);
+								gMultiSelectChipId.push_back(i);
+							}
+							if(ActineInG==j ||ActineInG==-1)
+							{
+								gUIState.activeitem=CHIP_ID(0,i);
+								gUIState.hotitem=gUIState.activeitem;
+								gUIState.kbditem=gUIState.activeitem;
+							}
+						}
+						gNewChip=NULL;
+						gNewChipName=NULL;
+					}
 					gUIState.mousedownx=gUIState.mousex;
 					gUIState.mousedowny=gUIState.mousey;
 					gUIState.mousedownkeymod&=~gCloneKeyMask; // stop cloning
-					gChip[oldchipid]->clone(gNewChip);
+					gMultiselectDirty=1;
 
-					int i;
-					for(i=0; i<(signed)gChip.size(); i++)
+
+					vector<Wire*> lMultiSelectWire=gMultiSelectWire;
+					vector<int> lMultiSelectWireId=gMultiSelectWireId;
+
+					gMultiSelectWire.clear();
+					gMultiSelectWireId.clear();
+
+					for(vector<Wire *>::iterator wit=lMultiSelectWire.begin(); wit!=lMultiSelectWire.end(); ++wit,j++)
 					{
-						if(gChip[i]==gNewChip)
+						Pin* FirstPin=(*wit)->mFirst;
+						Pin* SecondPin=(*wit)->mSecond;
+
+						Chip* FC=(*wit)->mFirst->mHost;
+						Chip* SC=(*wit)->mSecond->mHost;
+
+						int k=0;
+						Chip* FChip=FC;
+						Chip* SChip=SC;
+
+						for(vector<Chip*>::iterator cit=lOldChips.begin(); cit!=lOldChips.end(); ++cit,k++)
 						{
-							gUIState.activeitem=CHIP_ID(0,i);
+							if(FC==(*cit))
+							{
+								FChip=lNewChips[k];
+								for(unsigned int FPin=0; FPin<FChip->mPin.size(); FPin++)
+								{
+									if(FirstPin->mTooltip==FChip->mPin[FPin]->mTooltip)
+									{
+										FirstPin=FChip->mPin[FPin];
+										break;
+									}
+								}
+							}
+							if(SC==(*cit))
+							{
+								SChip=lNewChips[k];
+								for(unsigned int SPin=0; SPin<SChip->mPin.size(); SPin++)
+								{
+									if(SecondPin->mTooltip==SChip->mPin[SPin]->mTooltip)
+									{
+										SecondPin=SChip->mPin[SPin];
+										break;
+									}
+								}
+							}
 						}
+
+
+						add_wire(FirstPin,SecondPin,(*wit)->mType,false);
+
+						gMultiSelectWire.push_back(gWire.back());
+						gMultiSelectWireId.push_back(gWire.size()-1);
+
 					}
-					gUIState.hotitem=gUIState.activeitem;
-					gUIState.kbditem=gUIState.activeitem;
-					gNewChip=NULL;
-					gNewChipName=NULL;
+					do_build_nets();
 				}
 			}
 		}
@@ -1195,8 +1366,10 @@ static void draw_screen()
 				}
 			}
 			// Clean up after work
-			gMultiSelectChip.clear();
 			gMultiSelectWire.clear();
+			gMultiSelectWireId.clear();
+			gMultiSelectChip.clear();
+			gMultiSelectChipId.clear();
 			gUIState.kbditem=0;
 			gUIState.activeitem=0;
 			gUIState.hotitem=0;

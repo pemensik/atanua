@@ -118,7 +118,11 @@ extern vector<File *> gRedoStack;
 extern vector<BoxcacheData> gBoxCache;
 
 extern vector<Chip*> gMultiSelectChip;
+extern vector<int> gMultiSelectChipId;
+
 extern vector<Wire*> gMultiSelectWire;
+extern vector<int> gMultiSelectWireId; 
+
 extern int gMultiselectDirty;
 
 
@@ -143,8 +147,8 @@ extern float line_point_distance(float x0, float y0, float x1, float y1, float x
 
 
 
-extern void add_wire(Pin *aFirst, Pin *aSecond,LineType Vis=LineType::NORMAL);
-extern	void delete_wire(Pin* aFirst,Pin* aSecond,LineType Vis=LineType::NORMAL);
+extern void add_wire(Pin *aFirst, Pin *aSecond,LineType Vis=LineType::NORMAL,bool Clear=true);
+extern	void delete_wire(Pin* aFirst,Pin* aSecond,LineType Vis=LineType::NORMAL,bool Clear=true);
 
 
 extern void do_cancel();

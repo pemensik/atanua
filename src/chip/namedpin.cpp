@@ -72,8 +72,7 @@ void NamedPin::tool()
 			{
 				if((*it)->mPinName==mPinName)
 				{
-					delete_wire(&mInputPin,&(*it)->mInputPin,LineType::NAMEDPINWIRE);
-//					break;
+					delete_wire(&mInputPin,&(*it)->mInputPin,LineType::NAMEDPINWIRE,false);
 				}
 			}
 		}
@@ -84,8 +83,7 @@ void NamedPin::tool()
 			{
 				if((*it)->mPinName==mPinName)
 				{
-					add_wire(&mInputPin,&(*it)->mInputPin,LineType::NAMEDPINWIRE);
-//					break;
+					add_wire(&mInputPin,&(*it)->mInputPin,LineType::NAMEDPINWIRE,false);
 				}
 			}
 		}

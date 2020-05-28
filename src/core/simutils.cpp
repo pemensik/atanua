@@ -385,7 +385,7 @@ float line_point_distance(float x0, float y0, float x1, float y1, float x2, floa
 
 
 
-void add_wire(Pin *aFirst, Pin *aSecond,LineType Type)
+void add_wire(Pin *aFirst, Pin *aSecond,LineType Type,bool Clear)
 {
     int i;
     for (i = 0; i < (signed)gWire.size(); i++)
@@ -397,10 +397,12 @@ void add_wire(Pin *aFirst, Pin *aSecond,LineType Type)
 
     gWire.push_back(nw);                        
 
-    build_nets(Type!=LineType::NAMEDPINWIRE);
+    build_nets(Clear);
 }
 
-void delete_wire(Pin* aFirst,Pin* aSecond,LineType Type)
+
+
+void delete_wire(Pin* aFirst,Pin* aSecond,LineType Type,bool Clear)
 {
     int i;
     for(i=0; i<(signed)gWire.size(); i++)
@@ -409,7 +411,7 @@ void delete_wire(Pin* aFirst,Pin* aSecond,LineType Type)
             (gWire[i]->mFirst==aSecond&&gWire[i]->mSecond==aFirst))
         {
             gWire.erase(gWire.begin()+i);
-            build_nets(Type!=LineType::NAMEDPINWIRE);
+            build_nets(Clear);
             break;
         }
     }
@@ -515,9 +517,11 @@ void do_flush_boxloadqueue()
 
 void do_cancel()
 {
-    gMultiselectDirty = 1;
-    gMultiSelectChip.clear();
+    gMultiselectDirty=1;
     gMultiSelectWire.clear();
+    gMultiSelectWireId.clear();
+    gMultiSelectChip.clear();
+    gMultiSelectChipId.clear();
     gUIState.activeitem = 0;
     gUIState.kbditem = 0;
     gUIState.hotitem = 0;
