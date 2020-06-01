@@ -18,10 +18,10 @@ struct texpair
 
 	const char* mFilename;
 	unsigned char* mRawBitMap;
-	GLuint mFramebufferName;
 
+	GLuint mFramebufferHandle;
+	GLuint mTexHandle;
 
-	GLuint mHandle;
 	int mClamp;
 	unsigned int* mip;
 
@@ -32,10 +32,52 @@ struct texpair
 texpair* gTextureStore=NULL;
 int gTextureStoreSize=0;
 
-static void load_blank_texture(texpair& Tex);
+//static void load_blank_texture(const char* aFilename,int Clamp,int w,int h,unsigned long* src)
+static void do_load_blank_texture(texpair& Tex)
+{
+	if(!Tex.mRawBitMap)
+	{
+		Tex.mRawBitMap=(unsigned char*)new unsigned long[Tex.mxSize*Tex.mySize];
+
+		if(Tex.mRawBitMap==NULL)
+			return;
+
+		unsigned long* src=(unsigned long*)Tex.mRawBitMap;
+
+		for(int y=0; y<Tex.mySize; y++)
+		{
+			for(int x=0; x<Tex.mxSize; x++)
+			{
+				src[y*Tex.mySize+x]=0xFFFFFFFF;
+			}
+		}
+	}
+
+	glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,Tex.mxSize,Tex.mySize,0,GL_RGBA,GL_UNSIGNED_BYTE,Tex.mRawBitMap);
+
+	// set the texture wrapping/filtering options (on the currently bound texture object)
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP);
+
+	// Poor filtering. Needed !
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+
+	glFramebufferTexture(GL_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,Tex.mTexHandle,0);
+
+	if(glCheckFramebufferStatus(GL_FRAMEBUFFER)!=GL_FRAMEBUFFER_COMPLETE)
+	{
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR,"glCheckFramebufferStatus","glCheckFramebufferStatus(GL_FRAMEBUFFER)!=GL_FRAMEBUFFER_COMPLETE",NULL);
+	}
+
+	// unbind FBO
+	glBindFramebuffer(GL_FRAMEBUFFER,0); //Put back to screen
+	GLErrorTest();
+}
+
 
 //static void do_loadtexture(const char * aFilename, int clamp = 1)
-static void do_loadtexture(texpair& Tex)
+static void do_load_file_texture(texpair& Tex)
 {
 	int i,j;
 
@@ -49,7 +91,7 @@ static void do_loadtexture(texpair& Tex)
 		if(Tex.mRawBitMap==NULL)
 			return;
 
-		unsigned int* src=(unsigned int*)Tex.mRawBitMap;
+		unsigned long* src=(unsigned long*)Tex.mRawBitMap;
 
 		// mark all pixels with alpha = 0 to black
 		for(i=0; i<Tex.mySize; i++)
@@ -195,14 +237,14 @@ GLuint load_file_texture(const char* aFilename,int clamp)
 	for(i=0; i<gTextureStoreSize; i++)
 	{
 		if(stricmp(gTextureStore[i].mFilename,aFilename)==0)
-			return gTextureStore[i].mHandle;
+			return gTextureStore[i].mTexHandle;
 	}
 
 	// Create OpenGL texture handle and bind it to use
 
-	GLuint texname;
-	glGenTextures(1,&texname);
-	glBindTexture(GL_TEXTURE_2D,texname);
+	GLuint TexHandle;
+	glGenTextures(1,&TexHandle);
+	glBindTexture(GL_TEXTURE_2D,TexHandle);
 
 	//    do_loadtexture(aFilename, clamp);
 
@@ -220,34 +262,15 @@ GLuint load_file_texture(const char* aFilename,int clamp)
 		Tex->ttype=file;
 
 		Tex->mFilename=mystrdup(aFilename);
-		Tex->mHandle=texname;
+		Tex->mTexHandle=TexHandle;
 		Tex->mClamp=clamp;
 		Tex->mRawBitMap=0;
-		Tex->mFramebufferName=-1;
+		Tex->mFramebufferHandle=-1;
 
-		//        do_loadtexture(aFilename,clamp);
-		do_loadtexture(*Tex);
+		do_load_file_texture(*Tex);
 	}
 
-	return texname;
-}
-
-
-
-//static void load_blank_texture(const char* aFilename,int Clamp,int w,int h,unsigned long* src)
-static void load_blank_texture(texpair& Tex)
-{
-
-	GLErrorTest();
-
-	glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,Tex.mxSize,Tex.mySize,0,GL_RGBA,GL_UNSIGNED_BYTE,Tex.mRawBitMap);
-
-	GLErrorTest();
-
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR); // Linear Filtering
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR); // Linear Filtering
-
-	GLErrorTest();
+	return TexHandle;
 }
 
 
@@ -256,62 +279,30 @@ GLuint load_blank_texture(const char* aFilename,int Clamp,int w,int h)
 {
 	// First check if we have loaded this texture already
 	int i;
-	unsigned char* data;
+
 
 	for(i=0; i<gTextureStoreSize; i++)
 	{
 		if(stricmp(gTextureStore[i].mFilename,aFilename)==0)
-			return gTextureStore[i].mHandle;
+			return gTextureStore[i].mTexHandle;
 	}
 
 	// Create OpenGL texture handle and bind it to use
 	gTextureStore[i].mxSize=w;
 	gTextureStore[i].mySize=h;
 
-	GLuint FramebufferName=0;
+	GLuint FramebufferHandle=0;
 
-	glGenFramebuffers(1,&FramebufferName);
+	glGenFramebuffers(1,&FramebufferHandle);
 	GLErrorTest();
-	glBindFramebuffer(GL_FRAMEBUFFER,FramebufferName);
-	GLErrorTest();
-
-	GLuint texname;
-	glGenTextures(1,&texname);
-	glBindTexture(GL_TEXTURE_2D,texname);
-
-	// set the texture wrapping/filtering options (on the currently bound texture object)
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP);
-	unsigned long* src=new unsigned long[w*h];
-	data=(unsigned char*)src;
-
-	for(int y=0; y<h; y++)
-	{
-		for(int x=0; x<w; x++)
-		{
-			src[y*w+x]=0xFFFFFFFF;
-		}
-	}
-
-
-	glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,w,h,0,GL_RGBA,GL_UNSIGNED_BYTE,data);
-
-	// Poor filtering. Needed !
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
-
-	glFramebufferTexture(GL_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,texname,0);
-
-	if(glCheckFramebufferStatus(GL_FRAMEBUFFER)!=GL_FRAMEBUFFER_COMPLETE)
-	{
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR,"glCheckFramebufferStatus","glCheckFramebufferStatus(GL_FRAMEBUFFER)!=GL_FRAMEBUFFER_COMPLETE",NULL);
-		return false;
-	}
-
-	// unbind FBO
-	glBindFramebuffer(GL_FRAMEBUFFER,0); //Put back to screen
+	glBindFramebuffer(GL_FRAMEBUFFER,FramebufferHandle);
 	GLErrorTest();
 
+	GLuint TexHandle;
+	glGenTextures(1,&TexHandle);
+	GLErrorTest();
+	glBindTexture(GL_TEXTURE_2D,TexHandle);
+	GLErrorTest();
 	gTextureStoreSize++;
 
 	texpair* t=(texpair*)realloc(gTextureStore,sizeof(texpair)*gTextureStoreSize);
@@ -324,22 +315,22 @@ GLuint load_blank_texture(const char* aFilename,int Clamp,int w,int h)
 		Tex->ttype=dynamic;
 
 		Tex->mFilename=mystrdup(aFilename);
-		Tex->mHandle=texname;
-		Tex->mFramebufferName=FramebufferName;
+		Tex->mTexHandle=TexHandle;
+		Tex->mFramebufferHandle=FramebufferHandle;
 		Tex->mClamp=Clamp;
-		Tex->mRawBitMap=(unsigned char*)src;
+		Tex->mRawBitMap=0;
 		Tex->mxSize=w;
 		Tex->mySize=h;
 
-		load_blank_texture(*Tex);
+		do_load_blank_texture(*Tex);
 	}
 
-	return texname;
+	return TexHandle;
 }
 
 
 // First check if we have loaded this texture already
-GLuint FindTextBitmap(const char* aFilename,unsigned char** RawBitMap,GLuint& mFramebufferName)
+GLuint FindTextBitmap(const char* aFilename,unsigned char** RawBitMap,GLuint& mFramebufferHandle)
 {
 	int i;
 	for(i=0; i<gTextureStoreSize; i++)
@@ -347,9 +338,9 @@ GLuint FindTextBitmap(const char* aFilename,unsigned char** RawBitMap,GLuint& mF
 		if(stricmp(gTextureStore[i].mFilename,aFilename)==0)
 		{
 			*RawBitMap=gTextureStore[i].mRawBitMap;
-			mFramebufferName=gTextureStore[i].mFramebufferName;
+			mFramebufferHandle=gTextureStore[i].mFramebufferHandle;
 
-			return gTextureStore[i].mHandle;
+			return gTextureStore[i].mTexHandle;
 		}
 	}
 	return 0;
@@ -365,10 +356,17 @@ GLuint EmptyTextureStore()
 		{
 			delete(gTextureStore[i].mip);
 		}
+
 		if(gTextureStore[i].mRawBitMap)
 		{
 			delete(gTextureStore[i].mRawBitMap);
 		}
+
+		if(gTextureStore[i].mFramebufferHandle>0)
+		{
+			glDeleteFramebuffers(1,&gTextureStore[i].mFramebufferHandle);
+		}
+
 		delete gTextureStore;
 	}
 	return 0;
@@ -384,20 +382,26 @@ void reload_textures()
 
 		if(gTextureStore[i].ttype==file)
 		{
-			glBindTexture(GL_TEXTURE_2D,gTextureStore[i].mHandle);
+			glBindTexture(GL_TEXTURE_2D,gTextureStore[i].mTexHandle);
 			GLErrorTest();
-			do_loadtexture(gTextureStore[i]);
+			do_load_file_texture(gTextureStore[i]);
 			GLErrorTest();
 
 		}
-		else if(gTextureStore[i].mFramebufferName>0)
+		else if(gTextureStore[i].mFramebufferHandle>0)
 		{
-			load_blank_texture(gTextureStore[i]);
+			glGenFramebuffers(1,&gTextureStore[i].mFramebufferHandle);
+			GLErrorTest();
+
+			glBindFramebuffer(GL_FRAMEBUFFER,gTextureStore[i].mFramebufferHandle);
+			GLErrorTest();
+			glBindTexture(GL_TEXTURE_2D,gTextureStore[i].mTexHandle);
+			GLErrorTest();
+
+			do_load_blank_texture(gTextureStore[i]);
 		}
 		else
 		{
 		}
 	}
 }
-
-

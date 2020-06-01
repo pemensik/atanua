@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<AtanuaConfig GeneratedWith="Atanua/Win32 1.3.141220">
+<AtanuaConfig GeneratedWith="Atanua/Win32 1?4(JB!JK)">
     <PropagateInvalidState value="1" />
     <CustomCursors value="1" />
     <PerformanceIndicators value="0" />
@@ -17,7 +17,7 @@
     <User name="[No user name set]" />
     <FontSystem CacheKeys="512" VBO="0" SafeMode="0" />
     <PerformanceOptions Blending="1" AntialiasedLines="1" />
-    <Limits MaxBoxes="200" PhysicsKHz="10" />
+    <Limits MaxBoxes="200" PhysicsKHz="500" />
     <LED Samples="40" />
     <Autosave Directory="" Enable="0" SaveCount="10" Interval="1" />
 </AtanuaConfig>

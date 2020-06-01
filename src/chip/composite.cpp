@@ -189,54 +189,54 @@ void Composite::update(float aTick)
 				{
 					if(FindTextBitmap("composite_base",(unsigned char**)&RawBitMap,FramebufferName))
 					{
-						
-							if(SPin==NETSTATE_HIGH&&!mInHSync)
-							{
-								mInHSync=true;
-								mScanX=0;
-								mScanY++;
-								if(mScanY>mMaxY)
-								{
-									mMaxY=mScanY;
-								}
-								mInSyncCount=0;
 
-							}
-							else if(SPin==NETSTATE_HIGH&&mInHSync)
+						if(SPin==NETSTATE_HIGH&&!mInHSync)
+						{
+							mInHSync=true;
+							mScanX=0;
+							mScanY++;
+							if(mScanY>mMaxY)
 							{
-								mInSyncCount++;
-								if(mInSyncCount>35&&!mInVSync)
-								{
-									mScanX=0;
-									mScanY=0;
-									mInVSync=true;
-								}
-								else if(mInSyncCount>35&&mInVSync)
-								{
-									if(mScanX>=mMaxX)
-									{
-										mScanX=0;
-										mScanY++;
-									}
-								}
+								mMaxY=mScanY;
 							}
-							else if(SPin==NETSTATE_LOW&&mInHSync)
+							mInSyncCount=0;
+
+						}
+						else if(SPin==NETSTATE_HIGH&&mInHSync)
+						{
+							mInSyncCount++;
+							if(mInSyncCount>35&&!mInVSync)
 							{
-								mInHSync=false;
-								if(mInVSync)
+								mScanX=0;
+								mScanY=0;
+								mInVSync=true;
+							}
+							else if(mInSyncCount>35&&mInVSync)
+							{
+								if(mScanX>=mMaxX)
 								{
-									mInVSync=false;
 									mScanX=0;
 									mScanY++;
 								}
-
-								PixVal.RGBA=0xFFFF0000;
 							}
-							else
+						}
+						else if(SPin==NETSTATE_LOW&&mInHSync)
+						{
+							mInHSync=false;
+							if(mInVSync)
 							{
-								//				mScanX++;
+								mInVSync=false;
+								mScanX=0;
+								mScanY++;
 							}
-					
+
+							PixVal.RGBA=0xFFFF0000;
+						}
+						else
+						{
+							//				mScanX++;
+						}
+
 						if(mInVSync)
 						{
 							PixVal.RGBA=0xFF0000FF;
@@ -257,62 +257,62 @@ void Composite::update(float aTick)
 							}
 						}
 
-							int MMode;
+						int MMode;
 
-							glGetIntegerv(GL_MATRIX_MODE,&MMode);
+						glGetIntegerv(GL_MATRIX_MODE,&MMode);
 
-							// set rendering destination to FBO
-							glBindFramebuffer(GL_FRAMEBUFFER,FramebufferName);
-							GLErrorTest();
+						// set rendering destination to FBO
+						glBindFramebuffer(GL_FRAMEBUFFER,FramebufferName);
+						GLErrorTest();
 
-							glPushMatrix();
-							GLErrorTest();
+						glPushMatrix();
+						GLErrorTest();
 
-							glClearColor(0.5f,0.5f,0.5f,1.0f);
-							GLErrorTest();
+						glClearColor(0.5f,0.5f,0.5f,1.0f);
+						GLErrorTest();
 
-							glViewport(0,0,mxSize,mySize);
-							GLErrorTest();
+						glViewport(0,0,mxSize,mySize);
+						GLErrorTest();
 
-							glMatrixMode(GL_PROJECTION);
-							GLErrorTest();
-							glLoadIdentity();
-							GLErrorTest();
+						glMatrixMode(GL_PROJECTION);
+						GLErrorTest();
+						glLoadIdentity();
+						GLErrorTest();
 
-							gluOrtho2D(0,mxSize,0,mySize);
-							GLErrorTest();
+						gluOrtho2D(0,mxSize,0,mySize);
+						GLErrorTest();
 
-							if(DPin==NETSTATE_HIGH)
-							{
-								glColor4f(1,1,1,1);
-							}
-							else
-							{
-								glColor4f(0,0,0,1);
-							}
+						if(DPin==NETSTATE_HIGH)
+						{
+							glColor4f(1,1,1,1);
+						}
+						else
+						{
+							glColor4f(0,0,0,1);
+						}
 
-							glColor4f(PixVal.S.R,PixVal.S.G,PixVal.S.B,PixVal.S.A);
+						glColor4f(PixVal.S.R,PixVal.S.G,PixVal.S.B,PixVal.S.A);
 
-							glShadeModel(GL_SMOOTH);
-							GLErrorTest();
-							glBegin(GL_TRIANGLE_STRIP);
+						glShadeModel(GL_SMOOTH);
+						GLErrorTest();
+						glBegin(GL_TRIANGLE_STRIP);
 
-							glVertex2f(mScanX,mScanY);
-							glVertex2f(mScanX+1,mScanY+1);
-							glVertex2f(mScanX+1,mScanY);
-							glVertex2f(mScanX,mScanY+1);
+						glVertex2f(mScanX,mScanY);
+						glVertex2f(mScanX+1,mScanY+1);
+						glVertex2f(mScanX+1,mScanY);
+						glVertex2f(mScanX,mScanY+1);
 
-							glEnd();
+						glEnd();
 
-							glMatrixMode(MMode);
-							GLErrorTest();
+						glMatrixMode(MMode);
+						GLErrorTest();
 
-							glPopMatrix();
-							GLErrorTest();
+						glPopMatrix();
+						GLErrorTest();
 
-							// unbind FBO
-							glBindFramebuffer(GL_FRAMEBUFFER,0);
-							GLErrorTest();
+						// unbind FBO
+						glBindFramebuffer(GL_FRAMEBUFFER,0);
+						GLErrorTest();
 					}
 
 					mScanX++;
