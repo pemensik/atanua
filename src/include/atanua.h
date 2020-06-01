@@ -224,4 +224,6 @@ extern int gSelectKeyMask;
 extern int gCloneKeyMask;
 extern int gBlackBackground;
 
+
+
 char *mystrdup(const char *data);

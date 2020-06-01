@@ -60,7 +60,7 @@ PluginChip::PluginChip(DLLHANDLETYPE aDllHandle, const char *aChipname)
     
     mTexture = 0;
     if (mChipInfo.mTextureFilename)
-        mTexture = load_texture((char*)mChipInfo.mTextureFilename);
+        mTexture = load_file_texture((char*)mChipInfo.mTextureFilename);
 
 }
 

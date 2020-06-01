@@ -24,6 +24,19 @@ distribution.
 #include "composite.h"
 #include "slidingaverage.h"
 
+typedef union
+{
+	unsigned long RGBA;
+	struct
+	{
+		unsigned char R;
+		unsigned char G;
+		unsigned char B;
+		unsigned char A;
+	} S;
+} Pixy;
+
+
 Composite::Composite(CType aSize)
 {
 	mSize=aSize;
@@ -60,7 +73,8 @@ Composite::Composite(CType aSize)
 	mInputPin[1].set(0,2+ypos,this,"Sync");
 	mInputPin[2].set(0,4+ypos,this,"Clk");
 
-	mBaseTexture=create_blank_texture("composite_base",1,mxSize,mySize);
+
+	mBaseTexture=load_blank_texture("composite_base",1,mxSize,mySize);
 
 	for(i=0; i<mPins; i++)
 	{
@@ -75,6 +89,8 @@ Composite::Composite(CType aSize)
 
 	mMaxX=100;
 	mMaxY=100;
+
+	mDirty=true;
 
 
 }
@@ -104,38 +120,52 @@ Composite::~Composite()
 	}
 }
 
+
 void Composite::render(int aChipId)
 {
 	unsigned long* RawBitMap;
+	GLuint	FramebufferName;
 
-	if(FindTextBitmap("composite_base",(unsigned char**)&RawBitMap))
+	if(FindTextBitmap("composite_base",(unsigned char**)&RawBitMap,FramebufferName))
 	{
+		GLErrorTest();
+		glBindFramebuffer(GL_FRAMEBUFFER,0);
 		glBindTexture(GL_TEXTURE_2D,mBaseTexture);
 		glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP);
 		glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP);
+
 		glEnable(GL_TEXTURE_2D);
+
 		glColor4f(1,1,1,1);
 		glBegin(GL_TRIANGLE_STRIP);
+
 		glTexCoord2f(0,0);
 		glVertex2f(mX+0.25,mY);
+
 		glTexCoord2f(0,(float)mMaxY/(float)mySize);
 		glVertex2f(mX+0.25,mY+mH);
+
 		glTexCoord2f((float)mMaxX/(float)mxSize,0);
 		glVertex2f(mX+0.25+mW-0.5,mY);
+
 		glTexCoord2f((float)mMaxX/(float)mxSize,(float)mMaxY/(float)mySize);
 		glVertex2f(mX+0.25+mW-0.5,mY+mH);
+
 		glEnd();
 		glDisable(GL_TEXTURE_2D);
+		GLErrorTest();
 	}
 }
 
-#define PicStart 50
+
 
 void Composite::update(float aTick)
 {
-	unsigned long* RawBitMap,PixVal;
+	unsigned long* RawBitMap;
+	GLuint	FramebufferName;
 	netstates	ClkState;
 
+	Pixy	PixVal;
 
 	if(mInputPin[DATA_PIN].mNet&&mInputPin[SYNC_PIN].mNet&&mInputPin[CLK_PIN].mNet)
 	{
@@ -157,97 +187,132 @@ void Composite::update(float aTick)
 				}
 				else
 				{
-					if(FindTextBitmap("composite_base",(unsigned char**)&RawBitMap))
+					if(FindTextBitmap("composite_base",(unsigned char**)&RawBitMap,FramebufferName))
 					{
-						if(SPin==NETSTATE_HIGH&&!mInHSync)
-						{
-							mInHSync=true;
-							mScanX=0;
-							mScanY++;
-							if(mScanY>mMaxY)
+						
+							if(SPin==NETSTATE_HIGH&&!mInHSync)
 							{
-								mMaxY=mScanY;
-							}
-							mInSyncCount=0;
-
-						}
-						else if(SPin==NETSTATE_HIGH&&mInHSync)
-						{
-							mInSyncCount++;
-							if(mInSyncCount>35&&!mInVSync)
-							{
+								mInHSync=true;
 								mScanX=0;
-								mScanY=0;
-								mInVSync=true;
-							}
-							else if(mInSyncCount>35&&mInVSync)
-							{
-								if(mScanX>=mMaxX)
+								mScanY++;
+								if(mScanY>mMaxY)
 								{
+									mMaxY=mScanY;
+								}
+								mInSyncCount=0;
+
+							}
+							else if(SPin==NETSTATE_HIGH&&mInHSync)
+							{
+								mInSyncCount++;
+								if(mInSyncCount>35&&!mInVSync)
+								{
+									mScanX=0;
+									mScanY=0;
+									mInVSync=true;
+								}
+								else if(mInSyncCount>35&&mInVSync)
+								{
+									if(mScanX>=mMaxX)
+									{
+										mScanX=0;
+										mScanY++;
+									}
+								}
+							}
+							else if(SPin==NETSTATE_LOW&&mInHSync)
+							{
+								mInHSync=false;
+								if(mInVSync)
+								{
+									mInVSync=false;
 									mScanX=0;
 									mScanY++;
 								}
+
+								PixVal.RGBA=0xFFFF0000;
 							}
-						}
-						else if(SPin==NETSTATE_LOW&&mInHSync)
-						{
-							mInHSync=false;
-							if(mInVSync)
+							else
 							{
-								mInVSync=false;
-								mScanX=0;
-								mScanY++;
+								//				mScanX++;
 							}
-
-							PixVal=0xFFFF0000;
-
-							for(; mScanX<PicStart; mScanX++)
-							{
-								if(RawBitMap[mScanY*mxSize+mScanX]!=PixVal)
-								{
-									RawBitMap[mScanY*mxSize+mScanX]=PixVal;
-									mDirty=1;
-								}
-							}
-
-							//						mScanX=PicStart; //Doesn't matter length of reset signal should start in same place.
-						}
-						else
-						{
-							//				mScanX++;
-						}
-
+					
 						if(mInVSync)
 						{
-							PixVal=0xFF0000FF;
+							PixVal.RGBA=0xFF0000FF;
 						}
 						else if(mInHSync)
 						{
-							PixVal=0xFF00FF00;
+							PixVal.RGBA=0xFF00FF00;
 						}
 						else
 						{
 							if(DPin==NETSTATE_HIGH)
 							{
-								PixVal=0xFFFFFFFF;
+								PixVal.RGBA=0xFFFFFFFF;
 							}
 							else
 							{
-								PixVal=0xFF000000;
+								PixVal.RGBA=0xFF000000;
 							}
 						}
 
-						if(RawBitMap[mScanY*mxSize+mScanX]!=PixVal)
-						{
-							RawBitMap[mScanY*mxSize+mScanX]=PixVal;;
-							mDirty=1;
-						}
+							int MMode;
 
-					}
+							glGetIntegerv(GL_MATRIX_MODE,&MMode);
 
-					if(mDirty)
-					{
-						reload_textures();
+							// set rendering destination to FBO
+							glBindFramebuffer(GL_FRAMEBUFFER,FramebufferName);
+							GLErrorTest();
+
+							glPushMatrix();
+							GLErrorTest();
+
+							glClearColor(0.5f,0.5f,0.5f,1.0f);
+							GLErrorTest();
+
+							glViewport(0,0,mxSize,mySize);
+							GLErrorTest();
+
+							glMatrixMode(GL_PROJECTION);
+							GLErrorTest();
+							glLoadIdentity();
+							GLErrorTest();
+
+							gluOrtho2D(0,mxSize,0,mySize);
+							GLErrorTest();
+
+							if(DPin==NETSTATE_HIGH)
+							{
+								glColor4f(1,1,1,1);
+							}
+							else
+							{
+								glColor4f(0,0,0,1);
+							}
+
+							glColor4f(PixVal.S.R,PixVal.S.G,PixVal.S.B,PixVal.S.A);
+
+							glShadeModel(GL_SMOOTH);
+							GLErrorTest();
+							glBegin(GL_TRIANGLE_STRIP);
+
+							glVertex2f(mScanX,mScanY);
+							glVertex2f(mScanX+1,mScanY+1);
+							glVertex2f(mScanX+1,mScanY);
+							glVertex2f(mScanX,mScanY+1);
+
+							glEnd();
+
+							glMatrixMode(MMode);
+							GLErrorTest();
+
+							glPopMatrix();
+							GLErrorTest();
+
+							// unbind FBO
+							glBindFramebuffer(GL_FRAMEBUFFER,0);
+							GLErrorTest();
 					}
 
 					mScanX++;

@@ -31,12 +31,12 @@ StaticLevelChip::StaticLevelChip(int aLevel)
     if (aLevel)
     {
         mOutputPin.set(0.75, 1.5, this, "Output");
-        mTexture = load_texture("data/vcc.png");
+        mTexture = load_file_texture("data/vcc.png");
     }
     else
     {
         mOutputPin.set(0.75, 0, this, "Output");
-        mTexture = load_texture("data/gnd.png");
+        mTexture = load_file_texture("data/gnd.png");
     }
 }
 

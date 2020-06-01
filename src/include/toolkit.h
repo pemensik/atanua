@@ -58,12 +58,15 @@ distribution.
 #ifdef WINDOWS_VERSION
 #include <windows.h> // needed to get GL stuff to work
 #include <SDL.h>
-#include "stb/stb_image.h"
-#include "gl\glew.h"
-//#include "glee/glee.h"
-#include <GL/gl.h>
+#include <gl\glew.h>
+#include <SDL_opengl.h>
+#include <gl\glu.h>
+#include<gl\glut.h>  // glut.h header file from freeglut\include\GL folder    
 
-#include <GL/glut.h>
+#include "stb/stb_image.h"
+
+#include "TEXTURE.h"
+
 #define stricmp _stricmp
 #define strdup _strdup
 #endif
@@ -115,6 +118,7 @@ distribution.
 #define GEN_ID (__LINE__)
 #endif
 
+#define GLErrorTest() { GLenum err=glGetError();if(err!=GL_NO_ERROR){char Buff[256];sprintf(Buff,"File %s Line %d, Error 0x%08x (%s)\n",__FILE__,__LINE__,err,glewGetErrorString(err));SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR,__FUNCTION__,Buff,NULL);}}
 
 struct UIState
 {
@@ -174,6 +178,7 @@ struct Popup
 
 extern Popup popup[];
 
+
 #endif
 
 enum keystates
@@ -189,7 +194,7 @@ enum keystates
 #define M_PI 3.1415926535897932384626433832795
 #endif
 
-GLuint FindTextBitmap(const char* aFilename,unsigned char** RawBitMap);
+GLuint FindTextBitmap(const char* aFilename,unsigned char** RawBitMap,GLuint &mFramebufferName);
 
 
 extern MersenneTwister gVisualRand, gPhysicsRand;
@@ -201,16 +206,7 @@ void render_perfcounters(ACFont &font);
 void render_perfcounters(ACFont *font);
 void render_perfcounters(int tex_font);
 
-GLuint load_texture(const char * aFilename, int clamp = 1);
 
-GLuint create_blank_texture(const char* aFilename,int Clamp,int width,int height);
-
-
-//static void load_blank_texture(const char* aFilename,int Clamp,int w,int h,unsigned long* src);
-
-
-void reload_textures();
-GLuint EmptyTextureStore();
 
 
 SDL_Cursor *load_cursor(const char *aFilename, int hotx, int hoty);
@@ -236,6 +232,6 @@ int imgui_textfield(int id, ACFont &font, int x, int y, int w, int h, char *buff
 void imgui_prepare();
 void imgui_finish();
 
-
+char* mystrdup(const char* aString);
 
 #endif

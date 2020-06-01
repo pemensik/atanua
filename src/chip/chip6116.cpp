@@ -94,7 +94,7 @@ Chip6116::Chip6116(int aType)
     mPin.push_back(&mIOPin[2]);
     mIOPin[2].set(xpos, 3.1, this, "Pin 11:IO2"); xpos += 0.5475;
 
-    mTexture = load_texture("data/chip_24pin.png");
+    mTexture = load_file_texture("data/chip_24pin.png");
 }
 
 Chip6116::~Chip6116()

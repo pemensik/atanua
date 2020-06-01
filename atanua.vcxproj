@@ -90,7 +90,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;odbc32.lib;odbccp32.lib;glew32s.lib;Opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;odbc32.lib;odbccp32.lib;Opengl32.lib;GLU32.lib;glew32s.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>.\Release\Atanua.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>C:\opengl\freeglut\lib;C:\opengl\glew\lib\Release\Win32;C:\Users\John Bradley\source\SDL2-2.0.12\lib\x86;\libraries\SDL-1.2.13\lib;%(AdditionalLibraryDirectories);C:\opengl\glew-2.1.0\lib\Release\x64;C:\opengl\glfw-3.3.2.bin.WIN64\lib-vc2019</AdditionalLibraryDirectories>
@@ -139,7 +139,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;odbc32.lib;odbccp32.lib;glew32sd.lib;Opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;odbc32.lib;odbccp32.lib;Opengl32.lib;GLU32.lib;glew32sd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ShowProgress>NotSet</ShowProgress>
       <OutputFile>.\Debug\Atanua.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -259,6 +259,7 @@
     <ClCompile Include="src\core\pluginchipfactory.cpp" />
     <ClCompile Include="src\core\simutils.cpp" />
     <ClCompile Include="src\core\slidingaverage.cpp" />
+    <ClCompile Include="src\core\texture.cpp" />
     <ClCompile Include="src\core\wire.cpp" />
     <ClCompile Include="src\glee\GLee.c" />
     <ClCompile Include="src\stb\stb_image.c" />
@@ -358,6 +359,7 @@
     <ClInclude Include="src\include\stepper.h" />
     <ClInclude Include="src\include\switchchip.h" />
     <ClInclude Include="src\include\tchip.h" />
+    <ClInclude Include="src\include\texture.h" />
     <ClInclude Include="src\include\tflipflop.h" />
     <ClInclude Include="src\include\toolkit.h" />
     <ClInclude Include="src\include\xorchip.h" />

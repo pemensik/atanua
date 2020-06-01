@@ -33,7 +33,7 @@ ChipTriState::ChipTriState(int aUS)
     mPin.push_back(&mOutputPin);
     mOutputPin.set(3.5,0.45,this,"Output");
 
-    mTexture=load_texture("data/TriState_us.png");
+    mTexture=load_file_texture("data/TriState_us.png");
 
     mInputPinA.mReadOnly=1;
     mInputPinB.mReadOnly=1;

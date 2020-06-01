@@ -57,7 +57,7 @@ StepperMotor::StepperMotor(int aMode)
 
     mCurrentBits = 3;
     mCurrentAngle = 0;
-    mTexture = load_texture("data/stepper.png");    
+    mTexture = load_file_texture("data/stepper.png");    
 }
 
 void drawarrow(float x, float y, float angle, int color)

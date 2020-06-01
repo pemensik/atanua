@@ -31,9 +31,9 @@ NOTChip::NOTChip(int aUS)
     mPin.push_back(&mOutputPin);
     mOutputPin.set(3.5, 0.75, this, "Output");
     if (aUS)
-        mTexture = load_texture("data/not_us.png");
+        mTexture = load_file_texture("data/not_us.png");
     else
-        mTexture = load_texture("data/not_fi.png");
+        mTexture = load_file_texture("data/not_fi.png");
 
 	mInputPin.mReadOnly = 1;
 }

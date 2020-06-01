@@ -95,7 +95,7 @@ void ACFontPagesBlock::load(File * f)
         char temp[256];
         // should actually take the directory from the .fnt filename string..
         sprintf(temp,"data/%s",name[i]); 
-        glhandle[i] = load_texture(temp, 1);
+        glhandle[i] = load_file_texture(temp, 1);
     }
 }
 ACFontPagesBlock::~ACFontPagesBlock()

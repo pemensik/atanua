@@ -603,10 +603,25 @@ static void draw_screen()
 	// Rendering
 	////////////////////////////////////
 
+	glBindFramebuffer(GL_FRAMEBUFFER,0);
+	GLErrorTest();
+
+	glViewport(0,0,gScreenWidth,gScreenHeight);
+	GLErrorTest();
+
+	glMatrixMode(GL_PROJECTION);
+	GLErrorTest();
+
+	glLoadIdentity();
+	GLErrorTest();
+
+	gluOrtho2D(0,gScreenWidth,gScreenHeight,0);
+	GLErrorTest();
 	if(gBlackBackground)
 		glClearColor(0,0,0,1.0);
 	else
 		glClearColor(0.8,0.8,0.8,1.0);
+
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
 	drawrect(0,0,gConfig.mToolkitWidth,gScreenHeight,C_MENUBG);
@@ -1855,9 +1870,6 @@ void initvideo()
 	SDL_RendererInfo info;
 	int bpp=0;
 	int flags=0;
-	//    info = SDL_GetVideoInfo();
-
-
 
 	gRenderDriverIndex=1;
 
@@ -1890,7 +1902,9 @@ void initvideo()
 	gluOrtho2D(0,gScreenWidth,gScreenHeight,0);
 
 	if(gConfig.mUseBlending)
+	{
 		glEnable(GL_BLEND);
+	}
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
 //	reload_textures();
@@ -1912,7 +1926,10 @@ void resizevideo()
 	gluOrtho2D(0,gScreenWidth,gScreenHeight,0);
 
 	if(gConfig.mUseBlending)
+	{
 		glEnable(GL_BLEND);
+	}
+
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
 	reload_textures();
@@ -1939,8 +1956,39 @@ void audiomixer(void* userdata,Uint8* stream,int len)
 }
 
 
+#include <gl\glew.h>
+
+#if 1
+void GL_Init()
+{
+	GLuint err;
+
+	glewExperimental=GL_TRUE;
+	err=glewInit();
+	if(GLEW_OK!=err)
+	{
+		char Buff[256];
+		sprintf(Buff,"Error [main]: glewInit failed: %s\n",glewGetErrorString(err));
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR,"InitError",Buff,NULL);
+		exit(1);
+	}
+
+	const char* gl_version=reinterpret_cast<const char*>(glGetString(GL_VERSION));
+
+	// If OpenGL version >= 3, framebuffer objects are core - enable regardless of extension
+	// (the flags are initialised to false)
+	if(atof(gl_version)<3.0)
+	{
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR,"InitError","Needs OpelGL 3.0 or later",NULL);
+		exit(1);
+	}
+}
+#endif 
 int main(int argc,char** args)
 {
+	// initialize glut    
+	glutInit(&argc,args);
+
 	memset(gAudioBuffer,0,AUDIOBUF_SIZE);
 
 	gotoappdirectory(argc,args);
@@ -1965,12 +2013,17 @@ int main(int argc,char** args)
 
 	int sdlflags=SDL_INIT_VIDEO|SDL_INIT_NOPARACHUTE;
 
+
 	if(gConfig.mAudioEnable)
 		sdlflags|=SDL_INIT_AUDIO;
 
 	if(SDL_Init(sdlflags)<0)
 	{
-		fprintf(stderr,"Video initialization failed: %s\n",SDL_GetError());
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR,
+			"Missing file",
+			"File is missing. Please reinstall the program.",
+			NULL);
+//		fprintf(stderr,"Video initialization failed: %s\n",SDL_GetError());
 		SDL_Quit();
 		exit(0);
 	}
@@ -2005,6 +2058,8 @@ int main(int argc,char** args)
 	gScreenHeight=gConfig.mWindowHeight;
 
 	initvideo();
+
+	GL_Init();
 
 	{
 		char temp[256];
