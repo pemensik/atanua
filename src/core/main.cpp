@@ -833,7 +833,7 @@ static void draw_screen()
 			// Check for collisions with wires
 			for(i=0; i<(signed)gWire.size(); i++)
 			{
-				if(gWire[i]->mBox!=0)
+				if(gWire[i]->mBox!=0 || gWire[i]->mType!=LineType::NORMAL)
 					continue;
 				Pin* a,* b;
 				a=gWire[i]->mFirst;
