@@ -29,8 +29,9 @@ struct texpair
 	int mySize;        // Grid size (n x n)
 };
 
-texpair* gTextureStore=NULL;
-int gTextureStoreSize=0;
+vector<texpair> gTextureStore;
+
+//int gTextureStoreSize=0;
 
 //static void load_blank_texture(const char* aFilename,int Clamp,int w,int h,unsigned long* src)
 static void do_load_blank_texture(texpair& Tex)
@@ -233,8 +234,8 @@ static void do_load_file_texture(texpair& Tex)
 GLuint load_file_texture(const char* aFilename,int clamp)
 {
 	// First check if we have loaded this texture already
-	int i;
-	for(i=0; i<gTextureStoreSize; i++)
+	unsigned int i;
+	for(i=0; i<gTextureStore.size(); i++)
 	{
 		if(stricmp(gTextureStore[i].mFilename,aFilename)==0)
 			return gTextureStore[i].mTexHandle;
@@ -246,29 +247,20 @@ GLuint load_file_texture(const char* aFilename,int clamp)
 	glGenTextures(1,&TexHandle);
 	glBindTexture(GL_TEXTURE_2D,TexHandle);
 
-	//    do_loadtexture(aFilename, clamp);
+	texpair Tex;
 
-	gTextureStoreSize++;
+	Tex.ttype=file;
 
-	texpair* t=(texpair*)realloc(gTextureStore,sizeof(texpair)*gTextureStoreSize);
-	if(t!=NULL)
-	{
-		gTextureStore=t;
+	Tex.mFilename=mystrdup(aFilename);
+	Tex.mTexHandle=TexHandle;
+	Tex.mClamp=clamp;
+	Tex.mRawBitMap=0;
+	Tex.mFramebufferHandle=-1;
+	Tex.mip=0;
 
-		texpair* Tex=&gTextureStore[gTextureStoreSize-1];
+	gTextureStore.push_back(Tex);
 
-		memset(Tex,0,sizeof(*Tex));
-
-		Tex->ttype=file;
-
-		Tex->mFilename=mystrdup(aFilename);
-		Tex->mTexHandle=TexHandle;
-		Tex->mClamp=clamp;
-		Tex->mRawBitMap=0;
-		Tex->mFramebufferHandle=-1;
-
-		do_load_file_texture(*Tex);
-	}
+	do_load_file_texture(Tex);
 
 	return TexHandle;
 }
@@ -278,18 +270,18 @@ GLuint load_file_texture(const char* aFilename,int clamp)
 GLuint load_blank_texture(const char* aFilename,int Clamp,int w,int h)
 {
 	// First check if we have loaded this texture already
-	int i;
+	unsigned int i;
 
 
-	for(i=0; i<gTextureStoreSize; i++)
+	for(i=0; i<gTextureStore.size(); i++)
 	{
 		if(stricmp(gTextureStore[i].mFilename,aFilename)==0)
 			return gTextureStore[i].mTexHandle;
 	}
 
 	// Create OpenGL texture handle and bind it to use
-	gTextureStore[i].mxSize=w;
-	gTextureStore[i].mySize=h;
+//	gTextureStore[i].mxSize=w;
+//	gTextureStore[i].mySize=h;
 
 	GLuint FramebufferHandle=0;
 
@@ -303,27 +295,24 @@ GLuint load_blank_texture(const char* aFilename,int Clamp,int w,int h)
 	GLErrorTest();
 	glBindTexture(GL_TEXTURE_2D,TexHandle);
 	GLErrorTest();
-	gTextureStoreSize++;
 
-	texpair* t=(texpair*)realloc(gTextureStore,sizeof(texpair)*gTextureStoreSize);
-	if(t!=NULL)
-	{
-		gTextureStore=t;
 
-		texpair* Tex=&gTextureStore[gTextureStoreSize-1];
+	texpair Tex;
 
-		Tex->ttype=dynamic;
+	Tex.ttype=dynamic;
 
-		Tex->mFilename=mystrdup(aFilename);
-		Tex->mTexHandle=TexHandle;
-		Tex->mFramebufferHandle=FramebufferHandle;
-		Tex->mClamp=Clamp;
-		Tex->mRawBitMap=0;
-		Tex->mxSize=w;
-		Tex->mySize=h;
+	Tex.mFilename=mystrdup(aFilename);
+	Tex.mTexHandle=TexHandle;
+	Tex.mFramebufferHandle=FramebufferHandle;
+	Tex.mClamp=Clamp;
+	Tex.mRawBitMap=0;
+	Tex.mxSize=w;
+	Tex.mySize=h;
+	Tex.mip=0;
 
-		do_load_blank_texture(*Tex);
-	}
+	gTextureStore.push_back(Tex);
+
+	do_load_blank_texture(Tex);
 
 	return TexHandle;
 }
@@ -332,8 +321,8 @@ GLuint load_blank_texture(const char* aFilename,int Clamp,int w,int h)
 // First check if we have loaded this texture already
 GLuint FindTextBitmap(const char* aFilename,unsigned char** RawBitMap,GLuint& mFramebufferHandle)
 {
-	int i;
-	for(i=0; i<gTextureStoreSize; i++)
+	unsigned int i;
+	for(i=0; i<gTextureStore.size(); i++)
 	{
 		if(stricmp(gTextureStore[i].mFilename,aFilename)==0)
 		{
@@ -349,34 +338,22 @@ GLuint FindTextBitmap(const char* aFilename,unsigned char** RawBitMap,GLuint& mF
 
 GLuint EmptyTextureStore()
 {
-	int i;
-	for(i=0; i<gTextureStoreSize; i++)
+	unsigned int i;
+	for(i=0; i<gTextureStore.size(); i++)
 	{
-		if(gTextureStore[i].mip)
-		{
-			delete(gTextureStore[i].mip);
-		}
-
-		if(gTextureStore[i].mRawBitMap)
-		{
-			delete(gTextureStore[i].mRawBitMap);
-		}
-
-		if(gTextureStore[i].mFramebufferHandle>0)
-		{
-			glDeleteFramebuffers(1,&gTextureStore[i].mFramebufferHandle);
-		}
-
-		delete gTextureStore;
+		DeleteTextBitmap(gTextureStore[i].mFilename);
 	}
+
+	gTextureStore.clear();
+
 	return 0;
 }
 
 void reload_textures()
 {
 	// bind the textures to the same texture names as the last time.
-	int i;
-	for(i=0; i<gTextureStoreSize; i++)
+	unsigned int i;
+	for(i=0; i<gTextureStore.size(); i++)
 	{
 		GLErrorTest();
 
@@ -404,4 +381,43 @@ void reload_textures()
 		{
 		}
 	}
+}
+
+GLuint DeleteTextBitmap(const char* aFilename)
+{
+	unsigned int i;
+	for(i=0; i<gTextureStore.size(); i++)
+	{
+		if(stricmp(gTextureStore[i].mFilename,aFilename)==0)
+		{
+			if(gTextureStore[i].mip)
+			{
+				delete(gTextureStore[i].mip);
+				gTextureStore[i].mip=0;
+			}
+
+			if(gTextureStore[i].mRawBitMap)
+			{
+				delete(gTextureStore[i].mRawBitMap);
+				gTextureStore[i].mRawBitMap=0;
+			}
+
+			if(gTextureStore[i].mTexHandle)
+			{
+				glDeleteTextures(1,&gTextureStore[i].mTexHandle);
+				gTextureStore[i].mTexHandle=0;
+			}
+
+			if(gTextureStore[i].mFramebufferHandle>0)
+			{
+				glDeleteFramebuffers(1,&gTextureStore[i].mFramebufferHandle);
+				gTextureStore[i].mFramebufferHandle=0;
+			}
+
+			gTextureStore.erase(gTextureStore.begin()+i);
+
+			return 0;
+		}
+	}
+	return 1;
 }

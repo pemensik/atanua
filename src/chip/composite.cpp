@@ -36,6 +36,7 @@ typedef union
 	} S;
 } Pixy;
 
+unsigned int Composite::mCompositeNId=0;
 
 Composite::Composite(CType aSize)
 {
@@ -69,12 +70,18 @@ Composite::Composite(CType aSize)
 
 	float ypos=0.2;
 
+	mPinDescription[0]=mystrdup("1");
 	mInputPin[0].set(0,ypos,this,"Composite");
+	mPinDescription[1]=mystrdup("2");
 	mInputPin[1].set(0,2+ypos,this,"Sync");
+	mPinDescription[2]=mystrdup("3");
 	mInputPin[2].set(0,4+ypos,this,"Clk");
 
 
-	mBaseTexture=load_blank_texture("composite_base",1,mxSize,mySize);
+	sprintf_s(TextureName,32,"composite_base %d",Composite::mCompositeNId++);
+
+	mBaseTexture=load_blank_texture(TextureName,1,mxSize,mySize);
+
 
 	for(i=0; i<mPins; i++)
 	{
@@ -97,9 +104,7 @@ Composite::Composite(CType aSize)
 
 Composite::~Composite()
 {
-	delete[] mInputPin;
 	int i;
-
 
 	if(mInputPin)
 	{
@@ -118,6 +123,11 @@ Composite::~Composite()
 		delete[] mPinDescription;
 		mPinDescription=0;
 	}
+
+	if(DeleteTextBitmap("composite_base"))
+	{
+
+	}
 }
 
 
@@ -126,7 +136,7 @@ void Composite::render(int aChipId)
 	unsigned long* RawBitMap;
 	GLuint	FramebufferName;
 
-	if(FindTextBitmap("composite_base",(unsigned char**)&RawBitMap,FramebufferName))
+	if(FindTextBitmap(TextureName,(unsigned char**)&RawBitMap,FramebufferName))
 	{
 		GLErrorTest();
 		glBindFramebuffer(GL_FRAMEBUFFER,0);
@@ -187,7 +197,7 @@ void Composite::update(float aTick)
 				}
 				else
 				{
-					if(FindTextBitmap("composite_base",(unsigned char**)&RawBitMap,FramebufferName))
+					if(FindTextBitmap(TextureName,(unsigned char**)&RawBitMap,FramebufferName))
 					{
 
 						if(SPin==NETSTATE_HIGH&&!mInHSync)

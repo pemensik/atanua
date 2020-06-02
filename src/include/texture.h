@@ -11,4 +11,5 @@ GLuint load_blank_texture(const char* aFilename,int Clamp,int width,int height);
 
 
 void reload_textures();
+GLuint DeleteTextBitmap(const char* aFilename);
 GLuint EmptyTextureStore();

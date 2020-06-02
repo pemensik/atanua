@@ -69,6 +69,10 @@ private:
     int mMaxX;
     int mMaxY;
 
+    char    TextureName[32];
+
+    static unsigned int Composite::mCompositeNId;
+
 public:
     Composite(CType atype);
 	virtual ~Composite();
