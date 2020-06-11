@@ -200,6 +200,7 @@
     <ClCompile Include="src\chip\chip74245.cpp" />
     <ClCompile Include="src\chip\chip74283.cpp" />
     <ClCompile Include="src\chip\chip7432.cpp" />
+    <ClCompile Include="src\chip\chip744040.cpp" />
     <ClCompile Include="src\chip\chip7447.cpp" />
     <ClCompile Include="src\chip\chip74574.cpp" />
     <ClCompile Include="src\chip\chip7473.cpp" />
@@ -233,6 +234,8 @@
     <ClCompile Include="src\chip\or3chip.cpp" />
     <ClCompile Include="src\chip\or8chip.cpp" />
     <ClCompile Include="src\chip\orchip.cpp" />
+    <ClCompile Include="src\chip\pullhighchip.cpp" />
+    <ClCompile Include="src\chip\pulllowchip.cpp" />
     <ClCompile Include="src\chip\sedchip.cpp" />
     <ClCompile Include="src\chip\serchip.cpp" />
     <ClCompile Include="src\chip\srchip.cpp" />
@@ -310,6 +313,7 @@
     <ClInclude Include="src\include\chip74245.h" />
     <ClInclude Include="src\include\chip74283.h" />
     <ClInclude Include="src\include\chip7432.h" />
+    <ClInclude Include="src\include\chip744040.h" />
     <ClInclude Include="src\include\chip7447.h" />
     <ClInclude Include="src\include\chip74574.h" />
     <ClInclude Include="src\include\chip7473.h" />
@@ -348,6 +352,8 @@
     <ClInclude Include="src\include\orchip.h" />
     <ClInclude Include="src\include\pluginchip.h" />
     <ClInclude Include="src\include\pluginchipfactory.h" />
+    <ClInclude Include="src\include\pullhighchip.h" />
+    <ClInclude Include="src\include\pulllowchip.h" />
     <ClInclude Include="src\include\resource.h" />
     <ClInclude Include="src\include\sedchip.h" />
     <ClInclude Include="src\include\serchip.h" />

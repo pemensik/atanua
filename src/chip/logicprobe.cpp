@@ -23,6 +23,7 @@ distribution.
 #include "atanua.h"
 #include "atanua_internal.h"
 #include "logicprobe.h"
+#include <direct.h>
 
 LogicProbe::LogicProbe()
 {
@@ -102,8 +103,6 @@ void LogicProbe::render(int aChipId)
     sprintf(temp, "%02X", data);
     fn.drawstring(temp,mX+1.6,mY+2.75,0x3f000000,3);
 
-    //glVertexPointer(2,GL_FLOAT,0,mVtxArray);
-    //glEnable(GL_VERTEX_ARRAY);
     glColor4f(0, 1, 0, 0.5f);
     for (j = 0; j < 8; j++)
     {
@@ -111,21 +110,76 @@ void LogicProbe::render(int aChipId)
         k = mPlayhead;
         for (i = 0; i < 1000; i++)
         {
-            //mVtxArray[i*2+0] = mX + 1.6 + (999-i) * ((mW - 3) / 1000.0f);
-            //mVtxArray[i*2+1] = mY + 2.75 + (mData[j][k] * yht) + ystep * (7 - j);
             glVertex2f(mX + 1.6 + (999-i) * ((mW - 3) / 1000.0f),
                        mY + 2.75 + (mData[j][k] * yht) + ystep * (7 - j));
             k++;
             k %= 1000;
         }
         glEnd();
-      //  glDrawArrays(GL_LINE_STRIP,0,1000);
     }
-    //glDisable(GL_VERTEX_ARRAY);
     if (gUIState.kbditem == aChipId)
     {
-        if (gUIState.keyentered == ' ')
-            mState = !mState;
+        switch (gUIState.keyentered)
+        {
+            case ' ':
+                mState=!mState;
+                break;
+            case 'x':
+            case 'X':
+                FILE *fh=0;
+#define NAMEBUFFLEN 255
+                char NameBuff[NAMEBUFFLEN];
+                char MsgBuff[NAMEBUFFLEN];
+                char cwd[NAMEBUFFLEN];
+                bool    Cont=true;
+                _getcwd(cwd,NAMEBUFFLEN);
+
+                for(int i=0;Cont;i++)
+                {
+                    sprintf_s(NameBuff,NAMEBUFFLEN,"LogicProbeDump%04d.csv",i);
+                    fh=fopen(NameBuff,"r");
+                    if(fh!=NULL)
+                    {
+                        fclose(fh);
+                    }
+                    else
+                    {
+                        fh=fopen(NameBuff,"w");
+                        for(j=0; j<=mPlayhead; j++)
+                        {
+                            for(int k=0;k<8; k++)
+                            {
+                                switch(mData[k][j])
+                                {
+                                    case 5:
+                                        fprintf(fh,"0");
+                                        break;
+                                    case 0:
+                                        fprintf(fh,"1");
+                                        break;
+                                    case 2:
+                                        fprintf(fh,"0.5");
+                                        break;
+                                }
+
+                                if(k<7)
+                                {
+                                    fprintf(fh,",");
+                                }
+                                else
+                                {
+                                    fprintf(fh,"\n");
+                                }
+                            }
+                        }
+                        fclose(fh);
+                        Cont=false;
+                    }
+                }
+                sprintf_s(MsgBuff,NAMEBUFFLEN,"Log Dumped to %s\\%s",cwd,NameBuff);
+                SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING,__FUNCTION__,MsgBuff,NULL);
+                break;
+        }
     }
 }
 

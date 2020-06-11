@@ -38,8 +38,8 @@ Chip74163::Chip74163()
     DEF_PIN(mEnableTPin, 0, "Pin 10:ENABLE T");   
     DEF_PIN(mLoadPin, 0, "Pin 9:LOAD");   
     xpos = 0.15;
-    DEF_PIN(mClearPin, 1.75, "Pin 1:CLEAR");
-    DEF_PIN(mClockPin, 1.75, "Pin 2:CLOCK");
+    DEF_PIN(mClearPin, 1.75, "Pin 1:!CLR");
+    DEF_PIN(mClockPin, 1.75, "Pin 2:CLK");
     DEF_PIN(mInputPin[0], 1.75, "Pin 3:DATA INPUT A");
     DEF_PIN(mInputPin[1], 1.75, "Pin 4:DATA INPUT B");
     DEF_PIN(mInputPin[2], 1.75, "Pin 5:DATA INPUT C");

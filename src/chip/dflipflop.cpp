@@ -23,7 +23,8 @@ distribution.
 #include "atanua.h"
 #include "dflipflop.h"
 
-DFlipFlop::DFlipFlop()
+
+DFlipFlop::DFlipFlop(SType Type)
 {
     set(0,0,5,5,NULL);
     mPin.push_back(&mInputPinD);
@@ -47,6 +48,8 @@ DFlipFlop::DFlipFlop()
 	mInputPinD.mReadOnly = 1;
 	mInputPinR.mReadOnly = 1;
 	mInputPinS.mReadOnly = 1;
+
+    mType=Type;
 }
 
 void DFlipFlop::render(int aChipId)
@@ -86,6 +89,16 @@ void DFlipFlop::update(float aTick)
             {
                 mState = 1;
             }
+
+            if(mInputPinR.mNet!=NULL&&mInputPinR.mNet->mState==NETSTATE_HIGH)
+            {
+                mState=0;
+            }
+
+            if(mInputPinS.mNet!=NULL&&mInputPinS.mNet->mState==NETSTATE_HIGH)
+            {
+                mState=1;
+            }
         }
     }
     else
@@ -95,16 +108,18 @@ void DFlipFlop::update(float aTick)
 
     // If R or S signals are high, they override the JK/clock signals
 
-    if (mInputPinR.mNet != NULL && mInputPinR.mNet->mState == NETSTATE_HIGH)
+    if(mType==ASYNCCLR)
     {
-        mState = 0;
-    }
+        if(mInputPinR.mNet!=NULL&&mInputPinR.mNet->mState==NETSTATE_HIGH)
+        {
+            mState=0;
+        }
 
-    if (mInputPinS.mNet != NULL && mInputPinS.mNet->mState == NETSTATE_HIGH)
-    {
-        mState = 1;
+        if(mInputPinS.mNet!=NULL&&mInputPinS.mNet->mState==NETSTATE_HIGH)
+        {
+            mState=1;
+        }
     }
-
 
     if (mState)
     {

@@ -17,7 +17,7 @@
     <User name="[No user name set]" />
     <FontSystem CacheKeys="512" VBO="0" SafeMode="0" />
     <PerformanceOptions Blending="1" AntialiasedLines="1" />
-    <Limits MaxBoxes="200" PhysicsKHz="500" />
+    <Limits MaxBoxes="200" PhysicsKHz="1000" />
     <LED Samples="40" />
     <Autosave Directory="" Enable="0" SaveCount="10" Interval="1" />
 </AtanuaConfig>

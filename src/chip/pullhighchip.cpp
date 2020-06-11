@@ -21,50 +21,46 @@ misrepresented as being the original software.
 distribution.
 */
 #include "atanua.h"
-#include "andchip.h"
+#include "PullHighChip.h"
 
-ANDChip::ANDChip(int aUS)
+PullHighChip::PullHighChip()
 {
     set(0,0,4,2,NULL);
-    mPin.push_back(&mInputPinA);
-    mInputPinA.set(0, 0.25, this, "Input A");
-    mPin.push_back(&mInputPinB);
-    mInputPinB.set(0, 1.25, this, "Input B");
+    mPin.push_back(&mInputPin);
+    mInputPin.set(0, 0.75, this, "Input");
     mPin.push_back(&mOutputPin);
     mOutputPin.set(3.5, 0.75, this, "Output");
-    if (aUS)
-        mTexture = load_file_texture("data/and_us.png");
+    mTexture = load_file_texture("data/PullHigh.png");
+
+	mInputPin.mReadOnly = 1;
+}
+
+void PullHighChip::render(int aChipId)
+{
+    if(gBlackBackground)
+    {
+        drawtexturedrect(mTexture,mX,mY,mW,mH,0xffffffff);
+    }
     else
-        mTexture = load_file_texture("data/and_fi.png");
-
-	mInputPinA.mReadOnly = 1;
-	mInputPinB.mReadOnly = 1;
+    {
+        drawtexturedrect(mTexture,mX,mY,mW,mH,0xff000000);
+    }
 }
 
-void ANDChip::render(int aChipId)
+void PullHighChip::update(float aTick) 
 {
-	if (gBlackBackground)
-	    drawtexturedrect(mTexture,mX,mY,mW,mH,0xffffffff);
-	else
-		drawtexturedrect(mTexture,mX,mY,mW,mH,0xff000000);
-}
-
-void ANDChip::update(float aTick) 
-{
-    if (mInputPinA.mNet == NULL ||
-        mInputPinB.mNet == NULL ||
-        mInputPinA.mNet->mState == NETSTATE_NC ||
-        mInputPinB.mNet->mState == NETSTATE_NC ||
-        mInputPinA.mNet->mState == NETSTATE_INVALID ||
-        mInputPinB.mNet->mState == NETSTATE_INVALID)
+    if (mInputPin.mNet == NULL ||
+        mInputPin.mNet->mState == NETSTATE_INVALID)
     {
         mOutputPin.setState(gConfig.mPropagateInvalidState);
-        return;
     }
-
-    if ((mInputPinA.mNet->mState == NETSTATE_HIGH || mInputPinA.mNet->mState == NETSTATE_NC) &&
-        (mInputPinB.mNet->mState == NETSTATE_HIGH || mInputPinB.mNet->mState == NETSTATE_NC))
-        mOutputPin.setState(PINSTATE_WRITE_HIGH);
-    else
+    else if(mInputPin.mNet->mState==NETSTATE_LOW||mInputPin.mNet->mState==NETSTATE_NC)
+    {
         mOutputPin.setState(PINSTATE_WRITE_LOW);
+    }
+    else
+    {
+        mOutputPin.setState(PINSTATE_WRITE_HIGH);
+    }
+    return;
 }    

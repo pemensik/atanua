@@ -20,31 +20,16 @@ misrepresented as being the original software.
 3. This notice may not be removed or altered from any source
 distribution.
 */
-#ifndef DFLIPFLOP_H
-#define DFLIPFLOP_H
+#ifndef PullHigh_H
+#define PullHigh_H
 
-
-typedef enum
+class PullHighChip : public Chip
 {
-    ASYNCCLR,
-    SYNCCLR
-} SType;
-
-class DFlipFlop : public Chip
-{
-    Pin mInputPinD;
-    Pin mClockPin;
-    Pin mInputPinS;
-    Pin mInputPinR;
-    Pin mOutputPinA; // Output A pin for this chip
-    Pin mOutputPinB; // Output B pin for this chip (negated)
+    Pin mInputPin;  // Input pin for this chip
+    Pin mOutputPin; // Output pin for this chip
     int mTexture;
-    int mState;
-    int mClock;
-    SType mType;
-
 public:
-    DFlipFlop(SType Type); // Ctor
+    PullHighChip(); // Ctor
 
     virtual void render(int aChipId);
     virtual void update(float aTick);

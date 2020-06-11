@@ -371,6 +371,15 @@
     <ClCompile Include="src\core\texture.cpp">
       <Filter>Source Files\core</Filter>
     </ClCompile>
+    <ClCompile Include="src\chip\pulllowchip.cpp">
+      <Filter>Source Files\chip</Filter>
+    </ClCompile>
+    <ClCompile Include="src\chip\pullhighchip.cpp">
+      <Filter>Source Files\chip</Filter>
+    </ClCompile>
+    <ClCompile Include="src\chip\chip744040.cpp">
+      <Filter>Source Files\chip</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\include\7segchip.h">
@@ -650,6 +659,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\include\texture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\pulllowchip.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\pullhighchip.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\chip744040.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

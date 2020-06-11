@@ -20,31 +20,21 @@ misrepresented as being the original software.
 3. This notice may not be removed or altered from any source
 distribution.
 */
-#ifndef DFLIPFLOP_H
-#define DFLIPFLOP_H
+#ifndef CHIP744040_H
+#define CHIP744040_H
 
-
-typedef enum
+class Chip744040 : public Chip
 {
-    ASYNCCLR,
-    SYNCCLR
-} SType;
+    Pin mOutputPin[12];
+    Pin mClrPin;
+    Pin mClkPin;
 
-class DFlipFlop : public Chip
-{
-    Pin mInputPinD;
-    Pin mClockPin;
-    Pin mInputPinS;
-    Pin mInputPinR;
-    Pin mOutputPinA; // Output A pin for this chip
-    Pin mOutputPinB; // Output B pin for this chip (negated)
+    int mOldClk;
+    int mValue;
+
     int mTexture;
-    int mState;
-    int mClock;
-    SType mType;
-
 public:
-    DFlipFlop(SType Type); // Ctor
+    Chip744040(); // Ctor
 
     virtual void render(int aChipId);
     virtual void update(float aTick);

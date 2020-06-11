@@ -37,7 +37,7 @@ Chip74164::Chip74164()
     mOutputPin[4].set(xpos , 0, this, "Pin 10:OUTPUT QE"); xpos += 0.54;
 
     mPin.push_back(&mClearPin);
-    mClearPin.set(xpos , 0, this, "Pin 9:CLEAR"); xpos += 0.54;
+    mClearPin.set(xpos , 0, this, "Pin 9:!CLR"); xpos += 0.54;
 
     mPin.push_back(&mClockPin);
     mClockPin.set(xpos , 0, this, "Pin 9:CLOCK"); xpos += 0.54;
