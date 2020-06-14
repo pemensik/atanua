@@ -43,7 +43,8 @@ typedef enum netstates
     NETSTATE_NC,      // not connected - zero inputs
     NETSTATE_INVALID, // invalid state - mode than one input
     NETSTATE_HIGH,
-    NETSTATE_LOW
+    NETSTATE_LOW,
+    NETSTATE_HIGHZ
 } netstates;
 
 class Pin;

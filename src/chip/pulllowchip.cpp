@@ -50,11 +50,11 @@ void PullLowChip::render(int aChipId)
 void PullLowChip::update(float aTick) 
 {
     if (mInputPin.mNet == NULL ||
-        mInputPin.mNet->mState == NETSTATE_INVALID)
+        mInputPin.mNet->mState == NETSTATE_INVALID )
     {
         mOutputPin.setState(gConfig.mPropagateInvalidState);
     }
-    else if(mInputPin.mNet->mState==NETSTATE_LOW||mInputPin.mNet->mState==NETSTATE_NC)
+    else if(mInputPin.mNet->mState==NETSTATE_LOW||mInputPin.mNet->mState==NETSTATE_HIGHZ || mInputPin.mNet->mState==NETSTATE_NC)
     {
         mOutputPin.setState(PINSTATE_WRITE_LOW);
     }

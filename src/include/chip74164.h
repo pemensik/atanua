@@ -30,7 +30,7 @@ class Chip74164 : public Chip
     Pin mClockPin;     // Clock pin 
     Pin mOutputPin[8]; // Output pin 
     int mTexture;
-    int mOldClock;
+    netstates mOldClock;
 public:
     Chip74164(); // Ctor
 

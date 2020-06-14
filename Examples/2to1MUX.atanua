@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <Atanua Version="Atanua/Win32 1?4(JB!JK) (debug) - [No user name set]" ChipCount="13" WireCount="13" key="63432" scale="16">
-    <Chip Name="External Pin" xpos="1277952" ypos="622592" rot="0" key="1328361">00FFFFFF0000000B3E53454C412F2153454C42</Chip>
+    <Chip Name="External Pin" xpos="1277952" ypos="622592" rot="0" key="1328361">00FFFFFF000000043E53454C</Chip>
     <Chip Name="External Pin" xpos="2588672" ypos="622592" rot="0" key="1326905">00FFFFFF000000023E30</Chip>
     <Chip Name="External Pin" xpos="1933312" ypos="622592" rot="0" key="1312778">00FFFFFF000000023E31</Chip>
     <Chip Name="External Pin" xpos="2326528" ypos="3244032" rot="0" key="1433634">00FFFFFF000000023C51</Chip>

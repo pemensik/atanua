@@ -54,7 +54,7 @@ void PullHighChip::update(float aTick)
     {
         mOutputPin.setState(gConfig.mPropagateInvalidState);
     }
-    else if(mInputPin.mNet->mState==NETSTATE_LOW||mInputPin.mNet->mState==NETSTATE_NC)
+    else if(mInputPin.mNet->mState==NETSTATE_LOW||mInputPin.mNet->mState==NETSTATE_HIGHZ||mInputPin.mNet->mState==NETSTATE_NC)
     {
         mOutputPin.setState(PINSTATE_WRITE_LOW);
     }

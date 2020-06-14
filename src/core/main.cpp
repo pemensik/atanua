@@ -81,7 +81,7 @@ float gZoomFactor=20.0f;
 int gDragMode=DRAGMODE_NONE;
 int gSnap=1;
 int gLiveWires=1;
-int gBlackBackground=1;
+int gBlackBackground=0;
 
 int gSelectKeyMask;
 int gCloneKeyMask;
@@ -618,9 +618,14 @@ static void draw_screen()
 	gluOrtho2D(0,gScreenWidth,gScreenHeight,0);
 	GLErrorTest();
 	if(gBlackBackground)
+	{
 		glClearColor(0,0,0,1.0);
+	}
 	else
-		glClearColor(0.8,0.8,0.8,1.0);
+	{
+//		glClearColor(0.8,0.8,0.8,1.0);
+		glClearColor(1.0,1.0,1.0,1.0);
+	}
 
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
@@ -1640,9 +1645,14 @@ static void draw_screen()
 		else
 		{
 			if(gBlackBackground)
+			{
 				glColor4f(0.75f,0.75f,0.75f,1.0f);
+//				glColor4f(01.0f,01.0f,1.0f,1.0f);
+			}
 			else
+			{
 				glColor4f(0,0,0,1.0f);
+			}
 		}
 
 		Pin* a,* b;

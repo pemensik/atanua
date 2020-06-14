@@ -35,7 +35,7 @@ Chip744040::Chip744040()
 	DEF_PIN(mOutputPin[7],  0, "Pin 13:QH");
 	DEF_PIN(mOutputPin[8],  0, "Pin 12:QI");
 	DEF_PIN(mClrPin,        0, "Pin 11:CLR");
-	DEF_PIN(mClkPin,        0, "Pin 10:CLK");   
+	DEF_PIN(mClkPin,        0, "Pin 10:!CLK");   
 	DEF_PIN(mOutputPin[0],  0, "Pin 9:QA");
 	xpos = 0.15;
 	DEF_PIN(mOutputPin[11], 1.75, "Pin 1:QL");

@@ -24,123 +24,128 @@ distribution.
 
 Net::~Net()
 {
-    mPin.clear();
+	mPin.clear();
 	mROPin.clear();
 }
 
 Net::Net()
 {
-    mState = NETSTATE_HIGH;
-    mHighFreqChanges = 0;
-	mResetDelay = 10;
-	mDirty = 1;
+	mState=NETSTATE_HIGH;
+	mHighFreqChanges=0;
+	mResetDelay=10;
+	mDirty=1;
 }
 
 void Net::update()
 {
-	int next = nextstate();
+	int next=nextstate();
 
-	if (next == mState && mDirty == 0)
+	if(next==mState&&mDirty==0)
 	{
 		return;
 	}
 
 	int i;
-	for (i = 0; i < (signed)mPin.size(); i++)
+	for(i=0; i<(signed)mPin.size(); i++)
 	{
-		mPin[i]->mHost->mDirty = 1;
+		mPin[i]->mHost->mDirty=1;
 	}
-	for (i = 0; i < (signed)mROPin.size(); i++)
+	for(i=0; i<(signed)mROPin.size(); i++)
 	{
-		mROPin[i]->mHost->mDirty = 1;
+		mROPin[i]->mHost->mDirty=1;
 	}
 
-    if ((next == NETSTATE_HIGH && mState == NETSTATE_LOW) ||
-        (next == NETSTATE_LOW && mState == NETSTATE_HIGH))
-    {
-        mHighFreqChanges++;
-        if (mHighFreqChanges > 50)
-        {
-            mHighFreqChanges = 0;
-            if ((gPhysicsRand.genrand_int31() & 0xff) > 127)
-            {
-                return;
-            }
-        }
-    }
-    else
-    {
-        mHighFreqChanges = 0;
-    }
-    
-    mState = (netstates)next;
+	if((next==NETSTATE_HIGH&&mState==NETSTATE_LOW)||
+		(next==NETSTATE_LOW&&mState==NETSTATE_HIGH))
+	{
+		mHighFreqChanges++;
+		if(mHighFreqChanges>50)
+		{
+			mHighFreqChanges=0;
+			if((gPhysicsRand.genrand_int31()&0xff)>127)
+			{
+				return;
+			}
+		}
+	}
+	else
+	{
+		mHighFreqChanges=0;
+	}
+
+	mState=(netstates)next;
 }
 
 int Net::nextstate()
 {
-    Pin *input = NULL;    
-    Pin *maybeInput = NULL;
-   
+	Pin* input=NULL;
+	Pin* maybeInput=NULL;
+
 	int i;
-    for (i = 0; i < (signed)mPin.size(); i++)
-    {
-        if (mPin[i]->mState == PINSTATE_PROPAGATE_INVALID)
-        {
+	for(i=0; i<(signed)mPin.size(); i++)
+	{
+		if(mPin[i]->mState==PINSTATE_PROPAGATE_INVALID)
+		{
 			// Avoid propagation of invalid state
-			if (mResetDelay)
+			if(mResetDelay)
 			{
 				mResetDelay--;
-				mDirty = 1; // keep net dirty if handling reset delay
+				mDirty=1; // keep net dirty if handling reset delay
 				return NETSTATE_HIGH;
 			}
 
-            return NETSTATE_INVALID;
-        }
+			return NETSTATE_INVALID;
+		}
 
-        if (mPin[i]->mState == PINSTATE_READ_OR_WRITE_HIGH || mPin[i]->mState == PINSTATE_READ_OR_WRITE_LOW)
-        {
-            // Most likely more trouble than it's worth.
-            /*
-            if (maybeInput)
-            {
-                if (maybeInput->mState != mPin[i]->mState)
-                {
-                    mState = NETSTATE_INVALID;
-                    return;
-                }
-            }
-            */
+		if(mPin[i]->mState==PINSTATE_READ_OR_WRITE_HIGH||mPin[i]->mState==PINSTATE_READ_OR_WRITE_LOW)
+		{
+			// Most likely more trouble than it's worth.
+			/*
+			if (maybeInput)
+			{
+				 if (maybeInput->mState != mPin[i]->mState)
+				 {
+					  mState = NETSTATE_INVALID;
+					  return;
+				 }
+			}
+			*/
 
-            maybeInput = mPin[i];
-        }
+			maybeInput=mPin[i];
+		}
 
-        if (mPin[i]->mState == PINSTATE_WRITE_HIGH || mPin[i]->mState == PINSTATE_WRITE_LOW)
-        {
-            if (input != NULL)
-            {
-                return NETSTATE_INVALID;
-            }
-            input = mPin[i];
-        }
-    }
+		if(mPin[i]->mState==PINSTATE_WRITE_HIGH||mPin[i]->mState==PINSTATE_WRITE_LOW)
+		{
+			if(input!=NULL)
+			{
+				return NETSTATE_INVALID;
+			}
+			input=mPin[i];
+		}
+	}
 
-    if (input == NULL && maybeInput)
-        input = maybeInput;
+	if(input==NULL&&maybeInput)
+		input=maybeInput;
 
-    if (input == NULL) 
-    {
-        return NETSTATE_NC;
-    }
+	if(input==NULL)
+	{
+		return NETSTATE_NC;
+	}
 
-    if (input->mState == PINSTATE_WRITE_HIGH || input->mState == PINSTATE_READ_OR_WRITE_HIGH)
-    {
-        return NETSTATE_HIGH;        
-    }
+	if(input->mState==PINSTATE_WRITE_HIGH||input->mState==PINSTATE_READ_OR_WRITE_HIGH)
+	{
+		return NETSTATE_HIGH;
+	}
 
-    if (input->mState == PINSTATE_WRITE_LOW || input->mState == PINSTATE_READ_OR_WRITE_LOW)
-    {
-        return NETSTATE_LOW;
-    }
+	if(input->mState==PINSTATE_WRITE_LOW||input->mState==PINSTATE_READ_OR_WRITE_LOW)
+	{
+		return NETSTATE_LOW;
+	}
 
-    return NETSTATE_INVALID;
+	if(input->mState==PINSTATE_HIGHZ)
+	{
+		return NETSTATE_HIGHZ;
+	}
+
+	return NETSTATE_INVALID;
 }

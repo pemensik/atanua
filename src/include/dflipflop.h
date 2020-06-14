@@ -30,6 +30,13 @@ typedef enum
     SYNCCLR
 } SType;
 
+typedef enum
+{
+   POSITIVE,
+   POSITIVE_EDGE
+} TType;
+
+
 class DFlipFlop : public Chip
 {
     Pin mInputPinD;
@@ -39,9 +46,10 @@ class DFlipFlop : public Chip
     Pin mOutputPinA; // Output A pin for this chip
     Pin mOutputPinB; // Output B pin for this chip (negated)
     int mTexture;
-    int mState;
-    int mClock;
+    netstates mState;
+    netstates mClock;
     SType mType;
+    TType mTType;
 
 public:
     DFlipFlop(SType Type); // Ctor

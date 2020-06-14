@@ -48,7 +48,7 @@ NamedPin::NamedPin(float aSize) : Label(aSize)
 		}
 	}
 
-	mInputPin.mReadOnly=1;
+	mInputPin.mReadOnly=0;
 	mNamedPins.push_back(this);
 }
 

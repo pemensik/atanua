@@ -26,109 +26,99 @@ distribution.
 
 DFlipFlop::DFlipFlop(SType Type)
 {
-    set(0,0,5,5,NULL);
-    mPin.push_back(&mInputPinD);
-    mInputPinD.set(0, 1.25, this, "Data");
-    mPin.push_back(&mClockPin);
-    mClockPin.set(0, 3.25, this, "Clock");
+	set(0,0,5,5,NULL);
+	mPin.push_back(&mInputPinD);
+	mInputPinD.set(0,1.25,this,"Data");
+	mPin.push_back(&mClockPin);
+	mClockPin.set(0,3.25,this,"Clock");
 
-    mPin.push_back(&mInputPinS);
-    mInputPinS.set(2.25, 0, this, "Set");
-    mPin.push_back(&mInputPinR);
-    mInputPinR.set(2.25, 4.5, this, "Reset");
+	mPin.push_back(&mInputPinS);
+	mInputPinS.set(2.25,0,this,"Set");
+	mPin.push_back(&mInputPinR);
+	mInputPinR.set(2.25,4.5,this,"Reset");
 
-    mPin.push_back(&mOutputPinA);
-    mOutputPinA.set(4.5, 1.25, this, "Output");
-    mPin.push_back(&mOutputPinB);
-    mOutputPinB.set(4.5, 3.25, this, "Inverted output");
-    mTexture = load_file_texture("data/d_flipflop.png");
-    mState = 0;
-    mClock = 0;
+	mPin.push_back(&mOutputPinA);
+	mOutputPinA.set(4.5,1.25,this,"Output");
+	mPin.push_back(&mOutputPinB);
+	mOutputPinB.set(4.5,3.25,this,"Inverted output");
+	mTexture=load_file_texture("data/d_flipflop.png");
+	mState=NETSTATE_LOW;
+	mClock=NETSTATE_LOW;
 
-	mInputPinD.mReadOnly = 1;
-	mInputPinR.mReadOnly = 1;
-	mInputPinS.mReadOnly = 1;
+	mInputPinD.mReadOnly=1;
+	mInputPinR.mReadOnly=1;
+	mInputPinS.mReadOnly=1;
 
-    mType=Type;
+	mType=Type;
+	mTType=POSITIVE_EDGE;
 }
 
 void DFlipFlop::render(int aChipId)
 {
-	if (gBlackBackground)
-	    drawtexturedrect(mTexture,mX,mY,8,8,0xffffffff);
+	if(gBlackBackground)
+		drawtexturedrect(mTexture,mX,mY,8,8,0xffffffff);
 	else
 		drawtexturedrect(mTexture,mX,mY,8,8,0xff000000);
 }
 
-void DFlipFlop::update(float aTick) 
+void DFlipFlop::update(float aTick)
 {
-    // Let's make SR pins optional, but still validated
-    if (mInputPinD.mNet == NULL ||
-        mClockPin.mNet == NULL ||
-        mClockPin.mNet->mState == NETSTATE_INVALID ||
-        mInputPinD.mNet->mState == NETSTATE_INVALID ||
-        (mInputPinS.mNet != NULL && mInputPinS.mNet->mState == NETSTATE_INVALID) ||
-        (mInputPinR.mNet != NULL && mInputPinR.mNet->mState == NETSTATE_INVALID))
-    {
-        mOutputPinA.setState(gConfig.mPropagateInvalidState);
-        mOutputPinB.setState(gConfig.mPropagateInvalidState);
-        return;
-    }
+	// Let's make SR pins optional, but still validated
+	if(mInputPinD.mNet==NULL||
+		mClockPin.mNet==NULL||
+		mClockPin.mNet->mState==NETSTATE_INVALID||
+		mInputPinD.mNet->mState==NETSTATE_INVALID||
+		(mInputPinS.mNet!=NULL&&mInputPinS.mNet->mState==NETSTATE_INVALID)||
+		(mInputPinR.mNet!=NULL&&mInputPinR.mNet->mState==NETSTATE_INVALID))
+	{
+		mOutputPinA.setState(gConfig.mPropagateInvalidState);
+		mOutputPinB.setState(gConfig.mPropagateInvalidState);
+		return;
+	}
 
 
-    if (mClockPin.mNet->mState == NETSTATE_HIGH)
-    {
-        if (mClock == 0)
-        {
-            mClock = 1;
-            if (mInputPinD.mNet->mState == NETSTATE_LOW)
-            {
-                mState = 0;
-            }
-            else
-            {
-                mState = 1;
-            }
+	if((mTType==POSITIVE && mClockPin.mNet->mState==NETSTATE_HIGH) || (mTType==POSITIVE_EDGE&&mClockPin.mNet->mState!=mClock))
+	{
+		mClock=mClockPin.mNet->mState;
+		if(mClock==NETSTATE_HIGH)
+		{
+			mState=mInputPinD.mNet->mState;
 
-            if(mInputPinR.mNet!=NULL&&mInputPinR.mNet->mState==NETSTATE_HIGH)
-            {
-                mState=0;
-            }
+			if(mInputPinR.mNet!=NULL&&mInputPinR.mNet->mState==NETSTATE_HIGH)
+			{
+				mState=NETSTATE_LOW;
+			}
 
-            if(mInputPinS.mNet!=NULL&&mInputPinS.mNet->mState==NETSTATE_HIGH)
-            {
-                mState=1;
-            }
-        }
-    }
-    else
-    {
-        mClock = 0;
-    }
+			if(mInputPinS.mNet!=NULL&&mInputPinS.mNet->mState==NETSTATE_HIGH)
+			{
+				mState=NETSTATE_HIGH;
+			}
+		}
+	}
 
-    // If R or S signals are high, they override the JK/clock signals
+	// If R or S signals are high, they override the JK/clock signals
 
-    if(mType==ASYNCCLR)
-    {
-        if(mInputPinR.mNet!=NULL&&mInputPinR.mNet->mState==NETSTATE_HIGH)
-        {
-            mState=0;
-        }
+	if(mType==ASYNCCLR)
+	{
+		if(mInputPinR.mNet!=NULL&&mInputPinR.mNet->mState==NETSTATE_HIGH)
+		{
+			mState=NETSTATE_LOW;
+		}
 
-        if(mInputPinS.mNet!=NULL&&mInputPinS.mNet->mState==NETSTATE_HIGH)
-        {
-            mState=1;
-        }
-    }
+		if(mInputPinS.mNet!=NULL&&mInputPinS.mNet->mState==NETSTATE_HIGH)
+		{
+			mState=NETSTATE_HIGH;
+		}
+	}
 
-    if (mState)
-    {
-        mOutputPinA.setState(PINSTATE_WRITE_HIGH);
-        mOutputPinB.setState(PINSTATE_WRITE_LOW);
-    }
-    else
-    {
-        mOutputPinA.setState(PINSTATE_WRITE_LOW);
-        mOutputPinB.setState(PINSTATE_WRITE_HIGH);
-    }
-}    
+	if(mState==NETSTATE_HIGH)
+	{
+		mOutputPinA.setState(PINSTATE_WRITE_HIGH);
+		mOutputPinB.setState(PINSTATE_WRITE_LOW);
+	}
+	else
+	{
+		mOutputPinA.setState(PINSTATE_WRITE_LOW);
+		mOutputPinB.setState(PINSTATE_WRITE_HIGH);
+	}
+}
