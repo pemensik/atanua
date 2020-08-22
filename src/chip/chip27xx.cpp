@@ -180,7 +180,7 @@ void Chip27xx::update(float aTick)
         mEnablePin[1].mNet->mState != NETSTATE_LOW)
     {
         for (i = 0; i < 8; i++)
-            mOutputPin[i].setState(NETSTATE_NC);
+            mOutputPin[i].setState(PINSTATE_NC);
         return;
     }
 

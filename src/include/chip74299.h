@@ -20,52 +20,30 @@ misrepresented as being the original software.
 3. This notice may not be removed or altered from any source
 distribution.
 */
-#include "atanua.h"
-Pin::Pin() 
-{ 
-    mRotatedX = mRotatedY = mX = mY = 0; 
-    mHost = 0; 
-    mState = PINSTATE_READ; 
-    mNet = NULL; 
-    mTooltip = NULL;
-	mReadOnly = 0;
-}
+#ifndef CHIP74299_H
+#define CHIP74299_H
 
-Pin::Pin(float aX, float aY, Chip *aHost, const char *aTooltip)
+class Chip74299 : public Chip
 {
-    mRotatedX = mX = aX;
-    mRotatedY = mY = aY;
-    mHost = aHost;
-    mState = PINSTATE_READ;
-    mTooltip = aTooltip;
-    mNet = NULL;
-	mNetId = 0;
-}
+	Pin mS[2];		// mode select input 
+	Pin mOE[2];		// 3-state output enable input (active LOW) 
+	Pin mIO[8];		// parallel data input or 3-state parallel output (bus driver) 
+	Pin mQ0,mQ7;	// serial output (standard output) 
 
-void Pin::set(float aX, float aY, Chip *aHost, const char *aTooltip)
-{
-    mRotatedX = mX = aX;
-    mRotatedY = mY = aY;
-    mHost = aHost;
-	mNetId = 0;
-    mTooltip = aTooltip;
-}
+	Pin mMR;			// asynchronous master reset input (active LOW) 
 
-void Pin::setState(pinstates aState)
-{
-	if (mState != aState && mNet)
-		mNet->mDirty = 1;
+	Pin mDSR;		// serial data shift-right input 
+	Pin mCP;			// clock input (LOW to HIGH, edge-triggered) 
+	Pin mDSL;		// serial data shift-left input 
 
-	mState = aState;
-}
+	unsigned char	mReg;
+	int mTexture;
+	netstates mOldClock;
+public:
+	Chip74299(); // Ctor
 
-pinstates Pin::getState()
-{
-	return mState;
-}
+	virtual void render(int aChipId);
+	virtual void update(float aTick);
+};
 
-netstates Pin::getnetState()
-{
-   return mNet->mState;
-}
-
+#endif

@@ -199,6 +199,7 @@
     <ClCompile Include="src\chip\chip74244.cpp" />
     <ClCompile Include="src\chip\chip74245.cpp" />
     <ClCompile Include="src\chip\chip74283.cpp" />
+    <ClCompile Include="src\chip\chip74299.cpp" />
     <ClCompile Include="src\chip\chip7432.cpp" />
     <ClCompile Include="src\chip\chip744040.cpp" />
     <ClCompile Include="src\chip\chip7447.cpp" />
@@ -273,6 +274,7 @@
     <ClCompile Include="src\tinyxml_2_5_3\tinyxml\tinyxmlparser.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Header.h" />
     <ClInclude Include="src\include\16segchip.h" />
     <ClInclude Include="src\include\7segchip.h" />
     <ClInclude Include="src\include\and3chip.h" />
@@ -312,6 +314,7 @@
     <ClInclude Include="src\include\chip74244.h" />
     <ClInclude Include="src\include\chip74245.h" />
     <ClInclude Include="src\include\chip74283.h" />
+    <ClInclude Include="src\include\chip74299.h" />
     <ClInclude Include="src\include\chip7432.h" />
     <ClInclude Include="src\include\chip744040.h" />
     <ClInclude Include="src\include\chip7447.h" />

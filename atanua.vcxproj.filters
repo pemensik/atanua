@@ -380,6 +380,9 @@
     <ClCompile Include="src\chip\chip744040.cpp">
       <Filter>Source Files\chip</Filter>
     </ClCompile>
+    <ClCompile Include="src\chip\chip74299.cpp">
+      <Filter>Source Files\chip</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\include\7segchip.h">
@@ -668,6 +671,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\include\chip744040.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Header.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\chip74299.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

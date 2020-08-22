@@ -47,7 +47,7 @@ enum ATANUA_ASYNC_CALL
 typedef struct chipinfostruct_
 {
   int mPinCount;     /* Number of pins for the structure */
-  int *mPinOutput;   /* Pin output data states. See pinmodes enum. */
+  pinstates *mPinOutput;   /* Pin output data states. See pinmodes enum. */
   int *mPinInput;    /* Pin input data states. See netstates enum. */
   float mWidth;      /* Chip width */
   float mHeight;     /* Chip height */

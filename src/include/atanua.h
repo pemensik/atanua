@@ -35,8 +35,9 @@ typedef enum pinmodes
     PINSTATE_WRITE_LOW,
     PINSTATE_READ_OR_WRITE_HIGH,
     PINSTATE_READ_OR_WRITE_LOW,
-    PINSTATE_PROPAGATE_INVALID
-} pinmodes;
+    PINSTATE_PROPAGATE_INVALID,
+    PINSTATE_NC
+} pinstates;
 
 typedef enum netstates
 {
@@ -72,7 +73,7 @@ class Pin
 {
 public:	
 	// Current pin state
-    int mState;
+   pinstates mState;
 	// The net the pin is connected to
     Net *mNet;
 	// Net id. Used while building nets.
@@ -94,9 +95,10 @@ public:
 	// Setup
     void set(float aX, float aY, Chip *aHost, const char *aTooltip);
 	// set state
-	void setState(int aState);
+	void setState(pinstates aState);
 	// get state
-	int getState();
+   pinstates   getState();
+   netstates   getnetState();
 };
 
 class Chip
@@ -188,7 +190,7 @@ public:
     ~AtanuaConfig();
     void load();
     int mToolkitWidth;
-    int mPropagateInvalidState;
+    pinstates mPropagateInvalidState;
     int mAntialiasedLines;
     int mCustomCursors;
     int mWireFry;

@@ -97,6 +97,7 @@ distribution.
 #include "chip74244.h"
 #include "chip74245.h"
 #include "chip74283.h"
+#include "chip74299.h"
 #include "chip74574.h"
 
 #include "chip2051.h"
@@ -326,6 +327,7 @@ static const char* chip74241="74241";
 static const char* chip74244="74244";
 static const char* chip74245="74245";
 static const char* chip74283="74283";
+static const char* chip74299="74299";
 static const char* chip74574="74574";
 static const char* chip744040="744040";
 
@@ -573,6 +575,7 @@ Chip* BaseChipFactory::build(const char* aChipId)
 	if(strcmp(chip74244,aChipId)==0) return new Chip74244();
 	if(strcmp(chip74245,aChipId)==0) return new Chip74245();
 	if(strcmp(chip74283,aChipId)==0) return new Chip74283();
+	if(strcmp(chip74299,aChipId)==0) return new Chip74299();
 	if(strcmp(chip74574,aChipId)==0) return new Chip74574();
 	if(strcmp(chip744040,aChipId)==0) return new Chip744040();
 
@@ -760,6 +763,7 @@ void BaseChipFactory::getSupportedChips(vector<char*> aChipList[5])
 	aChipList[1].push_back(mystrdup(chip74244));
 	aChipList[1].push_back(mystrdup(chip74245));
 	aChipList[1].push_back(mystrdup(chip74283));
+	aChipList[1].push_back(mystrdup(chip74299));
 	aChipList[1].push_back(mystrdup(chip74574));
 	aChipList[1].push_back(mystrdup(chip744040));
 

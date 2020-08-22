@@ -57,15 +57,19 @@ void ChipTriState::update(float aTick)
         mOutputPin.setState(gConfig.mPropagateInvalidState);
         return;
     }
-    else
+    else if (mInputPinB.mNet->mState==NETSTATE_HIGH)
     {
-        if(mInputPinB.mNet->mState==NETSTATE_HIGH)
+        if(mInputPinA.mNet->mState==NETSTATE_HIGH)
         {
-            mOutputPin.setState(mInputPinA.mNet->mState);
+            mOutputPin.setState(PINSTATE_WRITE_HIGH);
         }
         else
         {
-            mOutputPin.setState(PINSTATE_HIGHZ);
+           mOutputPin.setState(PINSTATE_WRITE_LOW);
         }
+    }
+    else
+    {
+       mOutputPin.setState(PINSTATE_HIGHZ);
     }
 }
