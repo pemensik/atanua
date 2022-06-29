@@ -5,3 +5,11 @@ data/
 Release/
 Debug/
 *.sdf
+*.obj
+*.ipch
+*.dll
+*.exe
+v16/
+FileContentIndex/
+v17/
+

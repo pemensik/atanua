@@ -48,7 +48,7 @@ Chip74163::Chip74163()
 
     mTexture = load_file_texture("data/chip_16pin.png");
 
-    mOldClock = 0;
+    mOldClock = NETSTATE_LOW;
     mValue = 0;
 }
 
@@ -74,65 +74,71 @@ void Chip74163::update(float aTick)
     {
         for (i = 0; i < 4; i++)
             mOutputPin[i].setState(gConfig.mPropagateInvalidState);
-        return;
-    }
-
-    if (mClockPin.mNet->mState == NETSTATE_HIGH)
-    {
-        if (mOldClock == 0)
-        {
-            mOldClock = 1;
-            if (mClearPin.mNet->mState == NETSTATE_LOW)
-            {
-                mValue = 0;
-            }
-            else
-            if (mLoadPin.mNet->mState == NETSTATE_LOW)
-            {
-                mValue = ((mInputPin[3].mNet->mState == NETSTATE_HIGH)?(1 << 3):0) |
-                         ((mInputPin[2].mNet->mState == NETSTATE_HIGH)?(1 << 2):0) |
-                         ((mInputPin[1].mNet->mState == NETSTATE_HIGH)?(1 << 1):0) |
-                         ((mInputPin[0].mNet->mState == NETSTATE_HIGH)?(1 << 0):0);
-            }
-            else
-            if (mEnableTPin.mNet->mState == NETSTATE_HIGH &&
-                mEnablePPin.mNet->mState == NETSTATE_HIGH)
-            {
-                mValue++;
-            }
-        }
     }
     else
     {
-        mOldClock = 0;
-    }
-
-    for (i = 0; i < 4; i++)
-    {
-        if (mValue & (1 << i))
+        if (mClockPin.mNet->mState == NETSTATE_HIGH)
         {
-            mOutputPin[i].setState(PINSTATE_WRITE_HIGH);
+            if (mOldClock == NETSTATE_LOW)
+            {
+                mOldClock = NETSTATE_HIGH;
+                if (mClearPin.mNet->mState == NETSTATE_LOW)
+                {
+                    mValue = 0;
+                }
+                else
+                {
+                    if (mLoadPin.mNet->mState == NETSTATE_LOW)
+                    {
+                        mValue = ((mInputPin[3].mNet->mState == NETSTATE_HIGH) ? (1 << 3) : 0) |
+                            ((mInputPin[2].mNet->mState == NETSTATE_HIGH) ? (1 << 2) : 0) |
+                            ((mInputPin[1].mNet->mState == NETSTATE_HIGH) ? (1 << 1) : 0) |
+                            ((mInputPin[0].mNet->mState == NETSTATE_HIGH) ? (1 << 0) : 0);
+                    }
+                    else if (mEnableTPin.mNet->mState == NETSTATE_HIGH &&
+                        mEnablePPin.mNet->mState == NETSTATE_HIGH)
+                    {
+                        mValue++;
+                        if (mValue > 0b1111)
+                        {
+                            mValue = 0;
+                        }
+                    }
+                }
+            }
         }
         else
         {
-            mOutputPin[i].setState(PINSTATE_WRITE_LOW);
+            mOldClock = NETSTATE_LOW;
         }
-    }
 
-    if (mEnableTPin.mNet->mState == NETSTATE_HIGH)
-    {
-        if (mValue & (1 << 4))
+        for (i = 0; i < 4; i++)
         {
-            mRippleCarryPin.setState(PINSTATE_WRITE_HIGH);
-            mValue &= 15;
+            if (mValue & (1 << i))
+            {
+                mOutputPin[i].setState(PINSTATE_WRITE_HIGH);
+            }
+            else
+            {
+                mOutputPin[i].setState(PINSTATE_WRITE_LOW);
+            }
+        }
+
+        if (mEnableTPin.mNet->mState == NETSTATE_HIGH)
+        {
+            if (mValue == 0b1111)
+            {
+                mRippleCarryPin.setState(PINSTATE_WRITE_HIGH);
+//                mValue &= 15;
+            }
+            else
+            {
+                mRippleCarryPin.setState(PINSTATE_WRITE_LOW);
+            }
         }
         else
         {
             mRippleCarryPin.setState(PINSTATE_WRITE_LOW);
         }
-    }
-    else
-    {
-        mRippleCarryPin.setState(PINSTATE_WRITE_LOW);
     }
 }    

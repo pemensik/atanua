@@ -34,7 +34,7 @@ class Chip74163 : public Chip
     Pin mInputPin[4];
     Pin mEnablePPin;
     int mTexture;
-    int mOldClock;
+    netstates mOldClock;
     int mValue;
 public:
     Chip74163(); // Ctor
