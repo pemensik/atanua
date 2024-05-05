@@ -189,8 +189,12 @@ atanua-obj = $(atanua-cpp-src:.cpp=.o) $(atanua-c-src:.c=.o)
 CXX = clang
 CC = clang
 
-TINYXML_CPPFLAGS = -Isrc/tinyxml_2_5_3/tinyxml
-GTK_CPPFLAGS = `pkg-config --cflags gtk+-3.0`
+TINYXML_CFLAGS = -Isrc/tinyxml_2_5_3/tinyxml
+GTK_CFLAGS = `pkg-config --cflags gtk+-3.0`
+GTK_LIBS = `pkg-config --libs gtk+-3.0`
+GLIB2_CFLAGS = `pkg-config --cflags glib-2.0`
+GLIB2_LIBS = `pkg-config --libs glib-2.0`
+LIBS = -lSDLmain -lSDL -lGL -lGLU $(GTK_LIBS) $(GLIB2_LIBS)
 
 CXXFLAGS = \
 -O3 \
@@ -201,7 +205,7 @@ $(TINYXML_CPPFLAGS) $(GTK_CPPFLAGS)
 
 
 atanua: $(atanua-obj) $(atanua-headers)
-	$(CXX) `pkg-config --cflags gtk+-3.0` `pkg-config --cflags glib-2.0` -o $@ $(atanua-obj) -L. -lSDLmain -lSDL -lGL -lGLU `pkg-config --libs gtk+-3.0` `pkg-config --libs glib-2.0` -O3 $(CXXFLAGS)
+	$(CXX) $(GTK_CFLAGS) $(GLIB2_CFLAGS) -o $@ $(atanua-obj) -L. $(LIBS) -O3 $(CXXFLAGS)
 
 clean:
 	rm $(atanua-obj) atanua
