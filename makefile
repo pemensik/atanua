@@ -192,6 +192,9 @@ atanua-obj = $(atanua-cpp-src:.cpp=.o) $(atanua-c-src:.c=.o)
 CXX = clang++
 CC = clang
 
+# more recent tinyxml does not work
+#TINYXML_CFLAGS = `pkg-config --cflags tinyxml`
+#TINYXML_LIBS = `pkg-config --libs tinyxml`
 TINYXML_CFLAGS = -Isrc/tinyxml_2_5_3/tinyxml
 TINYXML_LIBS = # bundled source
 
