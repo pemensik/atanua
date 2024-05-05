@@ -184,6 +184,7 @@ atanua-headers = \
     src/include/chip7489.h \
     #
 
+tinyxml-src = # use system library instead
 atanua-cpp-src = $(atanua-basecode-cpp-src) $(atanua-core-cpp-src) $(atanua-chips-cpp-src) $(tinyxml-src)
 
 glee-obj = $(glee-c-src:.c=.o)
@@ -193,10 +194,10 @@ CXX = clang++
 CC = clang
 
 # more recent tinyxml does not work
-#TINYXML_CFLAGS = `pkg-config --cflags tinyxml`
-#TINYXML_LIBS = `pkg-config --libs tinyxml`
-TINYXML_CFLAGS = -Isrc/tinyxml_2_5_3/tinyxml
-TINYXML_LIBS = # bundled source
+TINYXML_CFLAGS = `pkg-config --cflags tinyxml`
+TINYXML_LIBS = `pkg-config --libs tinyxml`
+#TINYXML_CFLAGS = -Isrc/tinyxml_2_5_3/tinyxml
+#TINYXML_LIBS = # bundled source
 
 SDL2_CFLAGS  = `pkg-config --cflags sdl2`
 SDL2_LIBS    = `pkg-config --libs sdl2`
@@ -206,6 +207,7 @@ GLIB2_CFLAGS = `pkg-config --cflags glib-2.0`
 GLIB2_LIBS   = `pkg-config --libs glib-2.0`
 GLEW_CFLAGS  = `pkg-config --cflags glew`
 GLEW_LIBS    = `pkg-config --libs glew`
+
 LIBS = \
        $(TINYXML_LIBS) \
        $(SDL2_LIBS) \
