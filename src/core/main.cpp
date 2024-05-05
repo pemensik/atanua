@@ -1974,7 +1974,7 @@ void audiomixer(void* userdata,Uint8* stream,int len)
 }
 
 
-#include <gl\glew.h>
+#include <GL/glew.h>
 
 #if 1
 void GL_Init()

@@ -65,8 +65,6 @@ distribution.
 
 #include "stb/stb_image.h"
 
-#include "TEXTURE.h"
-
 #define stricmp _stricmp
 #define strdup _strdup
 #endif
@@ -78,16 +76,19 @@ distribution.
 #include <GL/GLee.h>
 #include <OpenGL/gl.h>
 #include <OpenGL/glu.h>
+#include <OpenGL/glew.h>
 #define stricmp(a,b) strcasecmp((a),(b))
 #endif
 
 
 #ifdef LINUX_VERSION
-#include <SDL/SDL.h>
+#include <SDL.h>
+#include <SDL_video.h>
 #include "stb/stb_image.h"
-#include <GL/GLee.h>
+#include <GL/glew.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
+#include <GL/glut.h>
 #define stricmp(a,b) strcasecmp((a),(b))
 #endif
 
@@ -95,6 +96,7 @@ distribution.
 #include <stdlib.h>
 #include <math.h>
 
+#include "texture.h"
 #include "mersennetwister.h"
 #include "angelcodefont.h"
 #include "fileutils.h"

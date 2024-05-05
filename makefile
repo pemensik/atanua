@@ -2,15 +2,14 @@ all: atanua
 
 # Copied from atanua.vcxproj
 glee-c-src = \
-    glee/GLee.c
+    src/glee/GLee.c
 
 atanua-c-src = \
     src/8051/core.c \
     src/8051/disasm.c \
     src/8051/opcodes.c \
-    stb/stb_image.c \
-    stb/stb_image_write.c \
-    glee/GLee.c
+    src/stb/stb_image.c \
+    src/stb/stb_image_write.c
 
 atanua-basecode-cpp-src = \
     src/basecode/angelcodefont.cpp \
@@ -134,55 +133,55 @@ tinyxml-src = \
 
 atanua-headers = \
     Header.h \
-    src\include\16segchip.h \
-    src\include\7segchip.h \
-    src\include\and3chip.h \
-    src\include\and8chip.h \
-    src\include\andchip.h \
-    src\include\angelcodefont.h \
-    src\include\atanua.h \
-    src\include\atanua_internal.h \
-    src\include\audiochip.h \
-    src\include\basechipfactory.h \
-    src\include\box.h \
-    src\include\buttonchip.h \
-    src\include\chip2051.h \
-    src\include\chip27xx.h \
-    src\include\chip309.h \
-    src\include\chip6116.h \
-    src\include\chip7400.h \
-    src\include\chip7402.h \
-    src\include\chip7404.h \
-    src\include\chip7408.h \
-    src\include\chip7410.h \
-    src\include\chip74138.h \
-    src\include\chip74139.h \
-    src\include\chip74151.h \
-    src\include\chip74154.h \
-    src\include\chip74163.h \
-    src\include\chip74164.h \
-    src\include\chip74165.h \
-    src\include\chip74181.h \
-    src\include\chip74191.h \
-    src\include\chip74192.h \
-    src\include\chip74193.h \
-    src\include\chip74195.h \
-    src\include\chip7420.h \
-    src\include\chip74240.h \
-    src\include\chip74241.h \
-    src\include\chip74244.h \
-    src\include\chip74245.h \
-    src\include\chip74283.h \
-    src\include\chip74299.h \
-    src\include\chip7432.h \
-    src\include\chip744040.h \
-    src\include\chip7447.h \
-    src\include\chip74574.h \
-    src\include\chip7473.h \
-    src\include\chip7474.h \
-    src\include\chip7485.h \
-    src\include\chip7486.h \
-    src\include\chip7489.h \
+    src/include/16segchip.h \
+    src/include/7segchip.h \
+    src/include/and3chip.h \
+    src/include/and8chip.h \
+    src/include/andchip.h \
+    src/include/angelcodefont.h \
+    src/include/atanua.h \
+    src/include/atanua_internal.h \
+    src/include/audiochip.h \
+    src/include/basechipfactory.h \
+    src/include/box.h \
+    src/include/buttonchip.h \
+    src/include/chip2051.h \
+    src/include/chip27xx.h \
+    src/include/chip309.h \
+    src/include/chip6116.h \
+    src/include/chip7400.h \
+    src/include/chip7402.h \
+    src/include/chip7404.h \
+    src/include/chip7408.h \
+    src/include/chip7410.h \
+    src/include/chip74138.h \
+    src/include/chip74139.h \
+    src/include/chip74151.h \
+    src/include/chip74154.h \
+    src/include/chip74163.h \
+    src/include/chip74164.h \
+    src/include/chip74165.h \
+    src/include/chip74181.h \
+    src/include/chip74191.h \
+    src/include/chip74192.h \
+    src/include/chip74193.h \
+    src/include/chip74195.h \
+    src/include/chip7420.h \
+    src/include/chip74240.h \
+    src/include/chip74241.h \
+    src/include/chip74244.h \
+    src/include/chip74245.h \
+    src/include/chip74283.h \
+    src/include/chip74299.h \
+    src/include/chip7432.h \
+    src/include/chip744040.h \
+    src/include/chip7447.h \
+    src/include/chip74574.h \
+    src/include/chip7473.h \
+    src/include/chip7474.h \
+    src/include/chip7485.h \
+    src/include/chip7486.h \
+    src/include/chip7489.h \
     #
 
 atanua-cpp-src = $(atanua-basecode-cpp-src) $(atanua-core-cpp-src) $(atanua-chips-cpp-src) $(tinyxml-src)
@@ -190,20 +189,43 @@ atanua-cpp-src = $(atanua-basecode-cpp-src) $(atanua-core-cpp-src) $(atanua-chip
 glee-obj = $(glee-c-src:.c=.o)
 atanua-obj = $(atanua-cpp-src:.cpp=.o) $(atanua-c-src:.c=.o)
 
-CXX = clang
+CXX = clang++
 CC = clang
 
 TINYXML_CFLAGS = -Isrc/tinyxml_2_5_3/tinyxml
-GLEE_CFLAGS = -Isrc/glee
-GLEE_LIBS = $(glee-obj)
-GTK_CFLAGS = `pkg-config --cflags gtk+-3.0`
-GTK_LIBS = `pkg-config --libs gtk+-3.0`
+TINYXML_LIBS = # bundled source
+# Not needed anymore, using glew instead
+GLEE_CFLAGS = 
+GLEE_LIBS = #-lGLee
+
+SDL2_CFLAGS  = `pkg-config --cflags sdl2`
+SDL2_LIBS    = `pkg-config --libs sdl2`
+GTK_CFLAGS   = `pkg-config --cflags gtk+-3.0`
+GTK_LIBS     = `pkg-config --libs gtk+-3.0`
 GLIB2_CFLAGS = `pkg-config --cflags glib-2.0`
-GLIB2_LIBS = `pkg-config --libs glib-2.0`
-LIBS = -lSDLmain -lSDL -lGL -lGLU $(GTK_LIBS) $(GLIB2_LIBS)
+GLIB2_LIBS   = `pkg-config --libs glib-2.0`
+GLEW_CFLAGS  = `pkg-config --cflags glew`
+GLEW_LIBS    = `pkg-config --libs glew`
+GLUT_CFLAGS  = `pkg-config --cflags glut`
+GLUT_LIBS    = `pkg-config --libs glut`
+LIBS = \
+       $(TINYXML_LIBS) \
+       $(SDL2_LIBS) \
+       $(GTK_LIBS) \
+       $(GLIB2_LIBS) \
+       $(GLEW_LIBS) \
+       $(GLUT_LIBS) \
+       $(GLEE_LIBS)
 
 CPPFLAGS = \
-$(TINYXML_CFLAGS) $(GLEE_CFLAGS) $(GTK_CFLAGS)
+     $(TINYXML_CFLAGS) \
+     $(SDL2_CFLAGS) \
+     $(GTK_CFLAGS) \
+     $(GLIB2_CFLAGS) \
+     $(GLEW_CFLAGS) \
+     $(GLUT_CFLAGS) \
+     $(GLEE_CFLAGS)
+
 CXXFLAGS = \
 -O3 \
 -Isrc \

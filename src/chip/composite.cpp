@@ -78,7 +78,7 @@ Composite::Composite(CType aSize)
 	mInputPin[2].set(0,4+ypos,this,"Clk");
 
 
-	sprintf_s(TextureName,32,"composite_base %d",Composite::mCompositeNId++);
+	snprintf(TextureName,32,"composite_base %d",Composite::mCompositeNId++);
 
 	mBaseTexture=load_blank_texture(TextureName,1,mxSize,mySize);
 

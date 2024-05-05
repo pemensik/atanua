@@ -22,8 +22,8 @@ distribution.
 */
 #include <stdio.h>
 #include <stdlib.h>
-#include "atanua.h"
 #include "toolkit.h"
+#include "atanua.h"
 #include "fileutils.h"
 #include "texture.h"
 
