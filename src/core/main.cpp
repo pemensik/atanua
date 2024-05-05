@@ -2014,10 +2014,6 @@ void GL_Init()
 #endif 
 int main(int argc,char** args)
 {
-	// initialize glut    
-	glutInit(&argc,args);
-	glutCreateWindow("Atanua");
-
 	memset(gAudioBuffer,0,AUDIOBUF_SIZE);
 
 	gotoappdirectory(argc,args);

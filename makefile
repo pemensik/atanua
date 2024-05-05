@@ -194,9 +194,6 @@ CC = clang
 
 TINYXML_CFLAGS = -Isrc/tinyxml_2_5_3/tinyxml
 TINYXML_LIBS = # bundled source
-# Not needed anymore, using glew instead
-GLEE_CFLAGS = 
-GLEE_LIBS = #-lGLee
 
 SDL2_CFLAGS  = `pkg-config --cflags sdl2`
 SDL2_LIBS    = `pkg-config --libs sdl2`
@@ -206,25 +203,19 @@ GLIB2_CFLAGS = `pkg-config --cflags glib-2.0`
 GLIB2_LIBS   = `pkg-config --libs glib-2.0`
 GLEW_CFLAGS  = `pkg-config --cflags glew`
 GLEW_LIBS    = `pkg-config --libs glew`
-GLUT_CFLAGS  = `pkg-config --cflags glut`
-GLUT_LIBS    = `pkg-config --libs glut`
 LIBS = \
        $(TINYXML_LIBS) \
        $(SDL2_LIBS) \
        $(GTK_LIBS) \
        $(GLIB2_LIBS) \
-       $(GLEW_LIBS) \
-       $(GLUT_LIBS) \
-       $(GLEE_LIBS)
+       $(GLEW_LIBS)
 
 CPPFLAGS = \
      $(TINYXML_CFLAGS) \
      $(SDL2_CFLAGS) \
      $(GTK_CFLAGS) \
      $(GLIB2_CFLAGS) \
-     $(GLEW_CFLAGS) \
-     $(GLUT_CFLAGS) \
-     $(GLEE_CFLAGS)
+     $(GLEW_CFLAGS)
 
 CXXFLAGS = \
 -O3 \
