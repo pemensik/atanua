@@ -1898,6 +1898,8 @@ void initvideo()
 		exit(0);
 	}
 
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
 	//    bpp = info->vfmt->BitsPerPixel;
 	flags=SDL_WINDOW_OPENGL|SDL_WINDOW_RESIZABLE;
 
@@ -1909,7 +1911,13 @@ void initvideo()
 	}
 	else
 	{
-		SDL_GL_CreateContext(gWindow);
+		static SDL_GLContext glctx = SDL_GL_CreateContext(gWindow);
+		if (!glctx)
+		{
+			fprintf(stderr, "Video GL context failed: %s\n", SDL_GetError());
+			SDL_Quit();
+			exit(0);
+		}
 	}
 
 	glViewport(0,0,gScreenWidth,gScreenHeight);
@@ -1983,7 +1991,9 @@ void GL_Init()
 
 	glewExperimental=GL_TRUE;
 	err=glewInit();
-	if(GLEW_OK!=err)
+	// Ignore the error on Wayland if we have passed SDL initialization
+	// https://github.com/endless-sky/endless-sky/pull/7027
+	if(GLEW_OK!=err && GLEW_ERROR_NO_GLX_DISPLAY!=err)
 	{
 		char Buff[256];
 		sprintf(Buff,"Error [main]: glewInit failed: %s\n",glewGetErrorString(err));
