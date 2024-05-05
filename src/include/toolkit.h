@@ -118,7 +118,15 @@ distribution.
 #define GEN_ID (__LINE__)
 #endif
 
-#define GLErrorTest() { GLenum err=glGetError();if(err!=GL_NO_ERROR){char Buff[256];sprintf(Buff,"File %s Line %d, Error 0x%08x (%s)\n",__FILE__,__LINE__,err,glewGetErrorString(err));SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR,__FUNCTION__,Buff,NULL);}}
+#define GLErrorTest() { \
+	GLenum err=glGetError(); \
+	if(err!=GL_NO_ERROR) \
+	{ \
+		char Buff[256]; \
+		sprintf(Buff,"File %s Line %d, Error 0x%08x (%s)\n",__FILE__,__LINE__,err,glewGetErrorString(err)); \
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR,__FUNCTION__,Buff,NULL); \
+	} \
+}
 
 struct UIState
 {

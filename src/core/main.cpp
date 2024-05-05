@@ -353,6 +353,10 @@ void process_events()
 //						initvideo();
 						resizevideo();
 						break;
+#ifdef DEBUG_SDL
+					default:
+						printf("DBG: windowevent %X data1:%d data2: %d\n", event.window.event, event.window.data1, event.window.data2);
+#endif
 				}
 				break;
 
@@ -1810,6 +1814,7 @@ static void draw_screen()
 				case NETSTATE_INVALID:
 					tooltip="Invalid state:\nTwo or more outputs\nconnected together\nor invalid wiring\non a chip.";
 					break;
+				case NETSTATE_HIGHZ:
 				case NETSTATE_HIGH:
 					tooltip="Signal 'High'";
 					break;
