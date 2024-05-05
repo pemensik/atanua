@@ -92,7 +92,7 @@ static void do_load_file_texture(texpair& Tex)
 		if(Tex.mRawBitMap==NULL)
 			return;
 
-		unsigned long* src=(unsigned long*)Tex.mRawBitMap;
+		unsigned int* src=(unsigned int*)Tex.mRawBitMap;
 
 		// mark all pixels with alpha = 0 to black
 		for(i=0; i<Tex.mySize; i++)
