@@ -74,7 +74,7 @@ int gVisibleChiplist=0;
 Chip* gNewChip=NULL;
 const char* gNewChipName=NULL;
 Pin* gWireStartDrag=NULL;
-int gKeyState[SDL_NUM_SCANCODES];
+int gKeyState[SDL_NUM_SCANCODES] = { 0, };
 
 float gWorldOfsX=0,gWorldOfsY=0;
 float gZoomFactor=20.0f;
@@ -103,6 +103,14 @@ unsigned char* gAudioOut;
 
 void initvideo();
 void resizevideo();
+
+int get_key_state(int keysym)
+{
+	if (keysym > (sizeof(gKeyState)/sizeof(gKeyState[0])))
+		return gKeyState[keysym];
+	else
+		return 0;
+}
 
 void handle_key(int keysym,int down)
 {
@@ -2017,7 +2025,7 @@ int main(int argc,char** args)
 	}
 
 
-	memset(gKeyState,0,sizeof(int)*256);
+	memset(gKeyState,0,sizeof(gKeyState));
 
 	gVisualRand.init_genrand(0xc0cac01a);
 

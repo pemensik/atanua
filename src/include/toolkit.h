@@ -234,4 +234,6 @@ void imgui_finish();
 
 char* mystrdup(const char* aString);
 
+int get_key_state(int character);
+
 #endif
