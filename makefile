@@ -1,6 +1,9 @@
 all: atanua
 
 # Copied from atanua.vcxproj
+glee-c-src = \
+    glee/GLee.c
+
 atanua-c-src = \
     src/8051/core.c \
     src/8051/disasm.c \
@@ -184,29 +187,34 @@ atanua-headers = \
 
 atanua-cpp-src = $(atanua-basecode-cpp-src) $(atanua-core-cpp-src) $(atanua-chips-cpp-src) $(tinyxml-src)
 
+glee-obj = $(glee-c-src:.c=.o)
 atanua-obj = $(atanua-cpp-src:.cpp=.o) $(atanua-c-src:.c=.o)
 
 CXX = clang
 CC = clang
 
 TINYXML_CFLAGS = -Isrc/tinyxml_2_5_3/tinyxml
+GLEE_CFLAGS = -Isrc/glee
+GLEE_LIBS = $(glee-obj)
 GTK_CFLAGS = `pkg-config --cflags gtk+-3.0`
 GTK_LIBS = `pkg-config --libs gtk+-3.0`
 GLIB2_CFLAGS = `pkg-config --cflags glib-2.0`
 GLIB2_LIBS = `pkg-config --libs glib-2.0`
 LIBS = -lSDLmain -lSDL -lGL -lGLU $(GTK_LIBS) $(GLIB2_LIBS)
 
+CPPFLAGS = \
+$(TINYXML_CFLAGS) $(GLEE_CFLAGS) $(GTK_CFLAGS)
 CXXFLAGS = \
 -O3 \
 -Isrc \
 -Isrc/include \
-$(TINYXML_CPPFLAGS) $(GTK_CPPFLAGS)
+$(CPPFLAGS)
 #
 
 
-atanua: $(atanua-obj) $(atanua-headers)
-	$(CXX) $(GTK_CFLAGS) $(GLIB2_CFLAGS) -o $@ $(atanua-obj) -L. $(LIBS) -O3 $(CXXFLAGS)
+atanua: $(atanua-obj) $(glee-obj) $(atanua-headers)
+	$(CXX) $(CXXFLAGS) -o $@ $(atanua-obj) -L. $(LIBS)
 
 clean:
-	rm $(atanua-obj) atanua
+	rm -f $(atanua-obj) $(glee-obj) atanua
 
